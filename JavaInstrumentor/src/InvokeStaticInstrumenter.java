@@ -299,7 +299,7 @@ public class InvokeStaticInstrumenter extends BodyTransformer{
 		params+= " -> ";
 		params+= ret;
 		Stmt lstStmt;
-		if(MainDriver.flag_delta) {
+		if(EntryPoint.flag_delta) {
 			InvokeExpr incExpr= Jimple.v().newStaticInvokeExpr(toggle.makeRef());
 			InvokeStmt incStmt2 = Jimple.v().newInvokeStmt(incExpr);
 			units.insertAfter(incStmt2, stmt);
