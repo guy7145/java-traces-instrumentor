@@ -1,0 +1,24 @@
+graph(name, nodes, edges) ::= <<
+digraph $name$ {
+  node [shape=box];
+  $nodes:{it| $it.first$ [label="$it.second$"]}; separator=";\n"
+  $edges; separator=";\n"
+}
+>>
+
+
+graphPage(description, graphAsText, imageFile) ::= <<
+<html>
+<head>
+ <style type="text/css">
+   body {
+     font: 10pt sans;
+   }
+  </style> 
+</head>
+<body>
+<H1>$description$</H1>
+<object data="$imageFile$" type="image/svg+xml"/>
+</body>
+</html>
+>>
