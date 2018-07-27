@@ -58,6 +58,11 @@ public class EntryPoint {
 		Scene.v().setSootClassPath(classpaths.toString());
 	}
 	
+	public static void setJimpleInstrumenter() {
+		Pack jtp = PackManager.v().getPack("jtp");
+		jtp.add(new Transform("jtp.instrumenter", new InvokeStaticInstrumenter()));
+	}
+	
 	public static String[] generateSootArgs(String classNameArg) {
 		return new String[] {
 				classNameArg,
@@ -87,13 +92,12 @@ public class EntryPoint {
 	}
 	
 	public static void main(String[] args) {
-		setSootClassPath();
 		String className = readArgs(args);
-
-		Pack jtp = PackManager.v().getPack("jtp");
-		jtp.add(new Transform("jtp.instrumenter", new InvokeStaticInstrumenter()));
 		
+		setSootClassPath();
+		setJimpleInstrumenter();
 		soot.Main.main(generateSootArgs(className));
+		
 		runInstrumentedClass(className);
 	}
 }

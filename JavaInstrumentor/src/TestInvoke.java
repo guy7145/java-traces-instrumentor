@@ -28,7 +28,7 @@ class TestInvoke {
 		  }
 	  return c;
   }
-  @checker
+  
   private static int doo(SLL sll) {
 	  sll.d=3;
 	  return 6;
