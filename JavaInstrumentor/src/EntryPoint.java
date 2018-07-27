@@ -51,24 +51,25 @@ public class EntryPoint {
 	
 	public static void setSootClassPath() {
 		StringBuilder classpaths = new StringBuilder();
-		
 		classpaths.append(Scene.v().getSootClassPath());
 		classpaths.append(";bin");
-		
+		classpaths.append(";C:\\Program Files\\Java\\jre1.8.0_121\\lib\\jce.jar");
 		Scene.v().setSootClassPath(classpaths.toString());
 	}
 	
 	public static void setJimpleInstrumenter() {
-		Pack jtp = PackManager.v().getPack("jtp");
-		jtp.add(new Transform("jtp.instrumenter", new InvokeStaticInstrumenter()));
+		final String JIMPLE_TRANSFORMATION_PACK = "jtp";
+		Pack jtp = PackManager.v().getPack(JIMPLE_TRANSFORMATION_PACK);
+		jtp.add(new Transform("jtp.instrumentation-phsae", new MyBodyTransformer()));
 	}
 	
 	public static String[] generateSootArgs(String classNameArg) {
 		return new String[] {
 				classNameArg,
-				"flyClasses.MyCounter",
+				"flyClasses.MyCounter", 
+//				"-w", // toggle whole-program mode
 //				"-output-format", 
-//				"jimple"
+//				"jimple",
 		};
 	}
 	
