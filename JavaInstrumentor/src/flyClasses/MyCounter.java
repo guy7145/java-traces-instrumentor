@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MyCounter {
+	public static final String CLASS_NAME = "flyClasses.MyCounter";
+	
 	private static PrintWriter writer=null;
 	public static String name="x";
 	public static int value=5;

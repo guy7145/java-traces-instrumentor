@@ -7,6 +7,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.util.Arrays;
 
 import flyClasses.MyCounter;
+import flyClasses.Trace;
 
 /**
  * Created by mian on 6/22/16.
@@ -53,7 +54,6 @@ public class EntryPoint {
 		StringBuilder classpaths = new StringBuilder();
 		classpaths.append(Scene.v().getSootClassPath());
 		classpaths.append(";bin");
-		classpaths.append(";C:\\Program Files\\Java\\jre1.8.0_121\\lib\\jce.jar");
 		Scene.v().setSootClassPath(classpaths.toString());
 	}
 	
@@ -66,7 +66,8 @@ public class EntryPoint {
 	public static String[] generateSootArgs(String classNameArg) {
 		return new String[] {
 				classNameArg,
-				"flyClasses.MyCounter", 
+				MyCounter.CLASS_NAME,
+				Trace.CLASS_NAME,
 //				"-w", // toggle whole-program mode
 //				"-output-format", 
 //				"jimple",

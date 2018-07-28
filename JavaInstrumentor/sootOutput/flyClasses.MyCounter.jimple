@@ -1,5 +1,6 @@
 public class flyClasses.MyCounter extends java.lang.Object
 {
+    public static final java.lang.String CLASS_NAME;
     private static java.io.PrintWriter writer;
     public static java.lang.String name;
     public static int value;
@@ -12,6 +13,8 @@ public class flyClasses.MyCounter extends java.lang.Object
 
     static void <clinit>()
     {
+        <flyClasses.MyCounter: java.lang.String CLASS_NAME> = "flyClasses.MyCounter";
+
         <flyClasses.MyCounter: java.io.PrintWriter writer> = null;
 
         <flyClasses.MyCounter: java.lang.String name> = "x";

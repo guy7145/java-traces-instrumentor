@@ -5,6 +5,7 @@ import java.util.Set;
 
 import bgu.cs.util.Matcher;
 import bgu.cs.util.Matcher.Case;
+import flyClasses.MyCounter;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -42,7 +43,7 @@ public class InvokeStaticInstrumenter extends BodyTransformer{
 	//MyCounter Methods
     static {
       //classes
-      counterClass    = Scene.v().loadClassAndSupport("flyClasses.MyCounter");
+      counterClass    = Scene.v().loadClassAndSupport(MyCounter.CLASS_NAME);
       printer = counterClass.getMethod("void printer(java.lang.String)");
       init   = counterClass.getMethod("void init(java.lang.String)");
       finish	  = counterClass.getMethod("void finish()");
