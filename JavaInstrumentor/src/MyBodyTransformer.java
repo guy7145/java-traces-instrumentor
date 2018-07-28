@@ -12,8 +12,10 @@ import bgu.cs.util.soot.CaseReturnVoidStmt;
 import flyClasses.Trace;
 import soot.Body;
 import soot.BodyTransformer;
+import soot.IntType;
 import soot.Local;
 import soot.PatchingChain;
+import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -81,7 +83,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	}
 	
 	private boolean isTypePrimitive(Type type) {
-		return type.toString().equals("int");
+		return !(type instanceof RefType);
 	}
 	
 	private void applyPatch(Unit patchedUnit, SootMethod method, Map<String, Local> methodLocals) throws UnexpectedException {
