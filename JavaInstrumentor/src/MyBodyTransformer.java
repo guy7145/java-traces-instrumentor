@@ -20,9 +20,11 @@ import soot.PatchingChain;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.coffi.method_info;
+import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
@@ -33,13 +35,14 @@ import soot.jimple.internal.JimpleLocal;
 public class MyBodyTransformer extends BodyTransformer {
 	
 	static SootClass traceClass;
-	static SootMethod updateAssignment, updateInvoke, updateReturn;
+	static SootMethod updateAssignmentPrimitive, updateAssignmentObject, updateInvoke, updateReturn;
 	static Matcher<Unit> commandMatcher;
 	
 	static {
 		traceClass = Scene.v().loadClassAndSupport(Trace.CLASS_NAME);
 //		for (SootMethod m : traceClass.getMethods()) System.out.println(m.getName());
-		updateAssignment = traceClass.getMethodByName(Trace.UPDATE_ASSIGNMENT_METHOD);
+		updateAssignmentPrimitive = traceClass.getMethodByName(Trace.UPDATE_ASSIGNMENT_PRIMITIVE_METHOD);
+		updateAssignmentObject = traceClass.getMethodByName(Trace.UPDATE_ASSIGNMENT_OBJECT_METHOD);
 		updateInvoke = traceClass.getMethodByName(Trace.UPDATE_INVOKE_METHOD);
 		updateReturn = traceClass.getMethodByName(Trace.UPDATE_RETURN_METHOD);
 		
@@ -85,6 +88,10 @@ public class MyBodyTransformer extends BodyTransformer {
 		return true;
 	}
 	
+	private boolean isTypePrimitive(Type type) {
+		return type.toString().equals("int");
+	}
+	
 	private void applyPatch(Unit patchedUnit, SootMethod method, Map<String, Local> methodLocals) throws UnexpectedException {
 		PatchingChain<Unit> methodUnits = method.getActiveBody().getUnits();
 		InvokeExpr exp = null;
@@ -93,11 +100,13 @@ public class MyBodyTransformer extends BodyTransformer {
 		if (isAssignStmt(c)) {	
 			CaseAssign assignment = (CaseAssign)c;
 			String varName = assignment.lhs.toString();
-			System.out.println(assignment.rhs.getType());
+			
+			SootMethod updaterMethod = isTypePrimitive(assignment.lhs.getType()) ? updateAssignmentPrimitive : updateAssignmentObject;
+			
 			exp = Jimple.v().newStaticInvokeExpr(
-					updateAssignment.makeRef(), 
+					updaterMethod.makeRef(), 
 					StringConstant.v(varName),
-					new JimpleLocal(varName, assignment.lhs.getType())
+					methodLocals.get(varName)
 					);
 			Stmt stmt = Jimple.v().newInvokeStmt(exp);
 			methodUnits.insertAfter(stmt, patchedUnit);
@@ -117,10 +126,10 @@ public class MyBodyTransformer extends BodyTransformer {
 		else throw new UnexpectedException("unknown case " + c.getClass().getName());
 	}
 	
-	public static Map<String, Local> mapLocals(SootMethod method) {
+	public static Map<String, Local> mapLocals(Body body) {
 		Map<String, Local> map = new HashMap<String, Local>();
 		
-		for (Local local : method.getActiveBody().getLocals()) {
+		for (Local local : body.getLocals()) {
 			System.out.printf("name=%s\n", local.getName());
 			map.put(local.getName(), local);
 		}
@@ -136,7 +145,7 @@ public class MyBodyTransformer extends BodyTransformer {
 			return;
 		} else System.out.printf("patching %s\n", method.getSignature());
 		
-		Map<String, Local> locals = mapLocals(method);
+		Map<String, Local> locals = mapLocals(body);
 		
 		int lineNumber = 1;
 		Iterator<Unit> snapIter = method
