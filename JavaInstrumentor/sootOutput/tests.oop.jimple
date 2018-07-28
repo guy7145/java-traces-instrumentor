@@ -1,0 +1,152 @@
+public class tests.oop extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        tests.oop r0;
+
+        r0 := @this: tests.oop;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        tests.oop$C r4, $r8;
+        tests.oop$A $r6;
+        tests.oop$B $r7, $r9;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10, $i11, $i12, $i13;
+        java.io.PrintStream $r10, $r11, $r12, $r13, $r14, $r15, $r16, $r17, $r18;
+        double $d0, $d1, $d2;
+        boolean $z0, $z1;
+
+        r0 := @parameter0: java.lang.String[];
+
+        $r6 = new tests.oop$A;
+
+        specialinvoke $r6.<tests.oop$A: void <init>()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r7 = new tests.oop$B;
+
+        specialinvoke $r7.<tests.oop$B: void <init>()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r8 = new tests.oop$C;
+
+        specialinvoke $r8.<tests.oop$C: void <init>()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        r4 = staticinvoke <tests.oop$C: tests.oop$C cmake()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignment(java.lang.String,java.lang.String)>("r4", "staticinvoke <tests.oop$C: tests.oop$C cmake()>()");
+
+        $r9 = new tests.oop$B;
+
+        specialinvoke $r9.<tests.oop$B: void <init>()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r10 = <java.lang.System: java.io.PrintStream out>;
+
+        $i0 = $r6.<tests.oop$A: int a>;
+
+        virtualinvoke $r10.<java.io.PrintStream: void println(int)>($i0);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r11 = <java.lang.System: java.io.PrintStream out>;
+
+        $i1 = $r7.<tests.oop$B: int b>;
+
+        virtualinvoke $r11.<java.io.PrintStream: void println(int)>($i1);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r12 = <java.lang.System: java.io.PrintStream out>;
+
+        $i2 = $r7.<tests.oop$B: int a>;
+
+        virtualinvoke $r12.<java.io.PrintStream: void println(int)>($i2);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r13 = <java.lang.System: java.io.PrintStream out>;
+
+        $i3 = $r8.<tests.oop$C: int c>;
+
+        virtualinvoke $r13.<java.io.PrintStream: void println(int)>($i3);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r14 = <java.lang.System: java.io.PrintStream out>;
+
+        $i4 = r4.<tests.oop$C: int c>;
+
+        virtualinvoke $r14.<java.io.PrintStream: void println(int)>($i4);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r15 = <java.lang.System: java.io.PrintStream out>;
+
+        $i6 = $r6.<tests.oop$A: int a>;
+
+        $i5 = $r7.<tests.oop$B: int a>;
+
+        $i8 = $i6 + $i5;
+
+        $i7 = $r7.<tests.oop$B: int b>;
+
+        $i10 = $i8 + $i7;
+
+        $i9 = $r8.<tests.oop$C: int c>;
+
+        $i11 = $i10 + $i9;
+
+        virtualinvoke $r15.<java.io.PrintStream: void println(int)>($i11);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r16 = <java.lang.System: java.io.PrintStream out>;
+
+        $i12 = $r8.<tests.oop$C: int c>;
+
+        $d1 = (double) $i12;
+
+        $i13 = r4.<tests.oop$C: int c>;
+
+        $d0 = (double) $i13;
+
+        $d2 = staticinvoke <java.lang.Math: double pow(double,double)>($d1, $d0);
+
+        virtualinvoke $r16.<java.io.PrintStream: void println(double)>($d2);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r17 = <java.lang.System: java.io.PrintStream out>;
+
+        $z0 = $r9 instanceof tests.oop$B;
+
+        virtualinvoke $r17.<java.io.PrintStream: void println(boolean)>($z0);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        $r18 = <java.lang.System: java.io.PrintStream out>;
+
+        $z1 = $r9 instanceof tests.oop$A;
+
+        virtualinvoke $r18.<java.io.PrintStream: void println(boolean)>($z1);
+
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        return;
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
+    }
+}

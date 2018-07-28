@@ -1,0 +1,76 @@
+public class flyClasses.Trace extends java.lang.Object
+{
+    public static final java.lang.String CLASS_NAME;
+    public static java.lang.String UPDATE_ASSIGNMENT_METHOD;
+    public static java.lang.String UPDATE_INVOKE_METHOD;
+    public static java.lang.String UPDATE_RETURN_METHOD;
+
+    static void <clinit>()
+    {
+        <flyClasses.Trace: java.lang.String CLASS_NAME> = "flyClasses.Trace";
+
+        <flyClasses.Trace: java.lang.String UPDATE_ASSIGNMENT_METHOD> = "UpdateAssignment";
+
+        <flyClasses.Trace: java.lang.String UPDATE_INVOKE_METHOD> = "UpdateInvoke";
+
+        <flyClasses.Trace: java.lang.String UPDATE_RETURN_METHOD> = "UpdateReturn";
+
+        return;
+    }
+
+    public void <init>()
+    {
+        flyClasses.Trace r0;
+
+        r0 := @this: flyClasses.Trace;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void UpdateAssignment(java.lang.String, java.lang.String)
+    {
+        java.lang.String r0, r1;
+        java.lang.Object[] $r2;
+        java.io.PrintStream $r3;
+
+        r0 := @parameter0: java.lang.String;
+
+        r1 := @parameter1: java.lang.String;
+
+        $r3 = <java.lang.System: java.io.PrintStream out>;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r2[0] = r0;
+
+        $r2[1] = r1;
+
+        virtualinvoke $r3.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("%s <- %s\n", $r2);
+
+        return;
+    }
+
+    public static void UpdateInvoke()
+    {
+        java.io.PrintStream $r0;
+
+        $r0 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r0.<java.io.PrintStream: void println(java.lang.String)>("invoked method");
+
+        return;
+    }
+
+    public static void UpdateReturn()
+    {
+        java.io.PrintStream $r0;
+
+        $r0 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r0.<java.io.PrintStream: void println(java.lang.String)>("returning");
+
+        return;
+    }
+}
