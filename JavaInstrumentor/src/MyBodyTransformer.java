@@ -93,11 +93,11 @@ public class MyBodyTransformer extends BodyTransformer {
 		if (isAssignStmt(c)) {	
 			CaseAssign assignment = (CaseAssign)c;
 			String varName = assignment.lhs.toString();
-			
+			System.out.println(assignment.rhs.getType());
 			exp = Jimple.v().newStaticInvokeExpr(
 					updateAssignment.makeRef(), 
 					StringConstant.v(varName),
-					
+					new JimpleLocal(varName, assignment.lhs.getType())
 					);
 			Stmt stmt = Jimple.v().newInvokeStmt(exp);
 			methodUnits.insertAfter(stmt, patchedUnit);
