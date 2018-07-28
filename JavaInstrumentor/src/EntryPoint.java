@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.Arrays;
 
-import flyClasses.MyCounter;
 import flyClasses.Trace;
+import redundant.MyCounter;
 
 /**
  * Created by mian on 6/22/16.
@@ -66,7 +66,6 @@ public class EntryPoint {
 	public static String[] generateSootArgs(String classNameArg) {
 		return new String[] {
 				classNameArg,
-				MyCounter.CLASS_NAME,
 				Trace.CLASS_NAME,
 //				"-w", // toggle whole-program mode
 //				"-output-format", 

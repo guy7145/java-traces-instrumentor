@@ -8,5 +8,7 @@ public class factorial {
 		for (int i = 1; i <= N; i++)
 			fact *= i;
 		System.out.printf("%d!=%d\n", N, fact);
+		
+		return;
 	}
 }

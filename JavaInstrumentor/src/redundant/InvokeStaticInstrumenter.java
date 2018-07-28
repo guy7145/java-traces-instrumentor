@@ -1,11 +1,12 @@
+package redundant;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+
 import bgu.cs.util.Matcher;
 import bgu.cs.util.Matcher.Case;
-import flyClasses.MyCounter;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -300,7 +301,8 @@ public class InvokeStaticInstrumenter extends BodyTransformer{
 		params+= " -> ";
 		params+= ret;
 		Stmt lstStmt;
-		if(EntryPoint.flag_delta) {
+		boolean flag_delta = false;
+		if(flag_delta) {
 			InvokeExpr incExpr= Jimple.v().newStaticInvokeExpr(toggle.makeRef());
 			InvokeStmt incStmt2 = Jimple.v().newInvokeStmt(incExpr);
 			units.insertAfter(incStmt2, stmt);

@@ -22,64 +22,46 @@ public class tests.factorial extends java.lang.Object
 
         r0 := @parameter0: java.lang.String[];
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
-
         i1 = 1;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
+        staticinvoke <flyClasses.Trace: void UpdateAssignment(java.lang.String,java.lang.String)>("i1", "1");
 
         i2 = 1;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
+        staticinvoke <flyClasses.Trace: void UpdateAssignment(java.lang.String,java.lang.String)>("i2", "1");
 
         goto label2;
-
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
 
      label1:
         i1 = i1 * i2;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
+        staticinvoke <flyClasses.Trace: void UpdateAssignment(java.lang.String,java.lang.String)>("i1", "i1 * i2");
 
         i2 = i2 + 1;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
+        staticinvoke <flyClasses.Trace: void UpdateAssignment(java.lang.String,java.lang.String)>("i2", "i2 + 1");
 
      label2:
         if i2 <= 6 goto label1;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
-
         $r2 = <java.lang.System: java.io.PrintStream out>;
-
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
 
         $r1 = newarray (java.lang.Object)[2];
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
-
         $r3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(6);
-
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
 
         $r1[0] = $r3;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
-
         $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i1);
-
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
 
         $r1[1] = $r4;
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
-
         virtualinvoke $r2.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("%d!=%d\n", $r1);
 
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
+        staticinvoke <flyClasses.Trace: void UpdateInvoke()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
 
         return;
-
-        staticinvoke <flyClasses.Trace: void SpeakUp()>();
     }
 }

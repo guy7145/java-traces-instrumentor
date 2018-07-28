@@ -1,3 +1,4 @@
+package redundant;
 import bgu.cs.util.Matcher.Case;
 import bgu.cs.util.soot.*;
 import soot.AbstractSootFieldRef;
