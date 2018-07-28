@@ -1,4 +1,3 @@
-import java.io.PrintStream;
 import java.rmi.UnexpectedException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,8 +10,6 @@ import bgu.cs.util.soot.CaseInvoke;
 import bgu.cs.util.soot.CaseReturnStmt;
 import bgu.cs.util.soot.CaseReturnVoidStmt;
 import flyClasses.Trace;
-import polyglot.ast.SourceFile;
-import redundant.MyCounter;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -22,15 +19,10 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
-import soot.Value;
-import soot.coffi.method_info;
-import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
-import soot.jimple.internal.JMulExpr;
-import soot.jimple.internal.JimpleLocal;
 
 public class MyBodyTransformer extends BodyTransformer {
 	
