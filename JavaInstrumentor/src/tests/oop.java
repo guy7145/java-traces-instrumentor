@@ -1,14 +1,14 @@
 package tests;
 
 public class oop {
-	static class A {
+	public static class A {
 		int a;
 		public A() {
 			a = 1;
 		}
 	}
 	
-	static class B extends A {
+	public static class B extends A {
 		int b;
 		public B() {
 			super();
@@ -17,7 +17,7 @@ public class oop {
 		}
 	}
 	
-	static class C {
+	public static class C {
 		int c;
 		public C() {
 			super();
@@ -33,6 +33,7 @@ public class oop {
 	
 	
 	public static void main(String[] args) {
+		System.out.println(A.class.getName());
 		A a = new A();
 		B b = new B();
 		C c1 = new C();

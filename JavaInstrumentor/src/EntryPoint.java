@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.Arrays;
 
+import fj.data.Array;
+import flyClasses.Example;
 import flyClasses.Trace;
 import redundant.MyCounter;
 
@@ -15,39 +17,78 @@ import redundant.MyCounter;
  * argument example: TestInvoke
  */
 public class EntryPoint {
-	public static boolean flag_delta, flag_debug;
-	public static final String FLAG_DELTA = "--delta", FLAG_DEBUG = "--debug";
+	public static boolean flag_delta, flag_jimple, flag_main_found;
+	public static String mainClass;
+	public static final String 
+	FLAG_DELTA = "--delta-only", 
+	FLAG_JIMPLE = "--jimple",
+	FLAG_MAIN = "--main";
 	
 	public static boolean verifyArguments(String[] args) {
-		return args.length >= 1;
+		return args.length >= 2 && (flag_main_found || flag_jimple);
 	}
 	
 	public static void printUsage() {
-		System.err.println("usage: java EntryPoint classname <options...>");
-		System.err.printf("%s toggle debug mode", FLAG_DEBUG);
-		System.err.printf("%s trace delta", FLAG_DELTA);
+		System.out.printf("usage: java EntryPoint [options] [classes...]\n", FLAG_MAIN);
+		
+		System.out.println();
+		System.out.println("[options]:");
+		System.out.printf("%s \t\tonly output as jimple\n", FLAG_JIMPLE);
+		System.out.printf("%s \t\tshow delta only\n", FLAG_DELTA);
+		System.out.printf("%s <classname>\tthe class containing \"void main(String[] args)\" to run after execution\n", FLAG_MAIN);
+		
+		System.out.println();
+		System.out.println("[classes...]:");
+		System.out.println("names of classes to analyze (not including the main class)");
 	}
 	
-	public static String readArgs(String[] args) {
+	public static String[] readArgs(String[] args) {
 		flag_delta = false;
-		flag_debug = false;
+		flag_jimple = false;
+		flag_main_found = false;
+		
+		int lastFlagArg = 0;
+		boolean updateLastFlagArgs;
+		for(int i = 0; i < args.length; i++) {
+			updateLastFlagArgs = true;
+			
+			if(args[i].equals(FLAG_DELTA)) flag_delta = true;
+			else if (args[i].equals(FLAG_JIMPLE)) flag_jimple = true;
+			else if (args[i].equals(FLAG_MAIN)) {
+				i++;
+				mainClass = args[i];
+				flag_main_found = true;
+			}
+			else updateLastFlagArgs = false;
+			
+			if (updateLastFlagArgs) lastFlagArg = i;
+		}
 		
 		if (!verifyArguments(args)) {
 			printUsage();
 			System.exit(0);
 		}
 		
-		for(int i = 0; i < args.length; i++) {
-			if(args[i].equals(FLAG_DELTA)) flag_delta = true;
-			else if (args[i].equals(FLAG_DEBUG)) flag_debug = true;
+		String[] extraClasses = Arrays.copyOfRange(args, lastFlagArg + 1, args.length);
+		return extraClasses;
+	}
+
+	private static void printArgs(String[] extraClasses) {
+		System.out.println("ARGUMENTS:");
+		
+		if (flag_jimple) System.out.println("using jimple output");
+		if (flag_delta) System.out.println("showing delta only");
+		
+		System.out.printf("main class is %s\n", mainClass);
+		
+		if (extraClasses.length == 0) System.out.println("no extra classes");
+		else {
+			System.out.println("extra classes:");
+			for (String s : extraClasses) System.out.println(s);
 		}
 		
-		if (flag_debug) {
-			System.out.println("debug mode on");
-			if (flag_delta) System.out.println("delta flag on");
-		}
-		
-		return args[0];
+		System.out.println();
+		System.out.println("end of arguments.");
 	}
 	
 	public static void setSootClassPath() {
@@ -63,14 +104,18 @@ public class EntryPoint {
 		jtp.add(new Transform("jtp.instrumentation-phsae", new MyBodyTransformer()));
 	}
 	
-	public static String[] generateSootArgs(String classNameArg) {
-		return new String[] {
-				classNameArg,
+	public static String[] generateSootArgs(String[] args, String[] classNames) {
+		String[] basicArgs = new String[] {
+				"-output-format", 
+				flag_jimple ? "jimple" : "class",
 				Trace.CLASS_NAME,
-//				"-w", // toggle whole-program mode
-//				"-output-format", 
-//				"jimple",
+				Example.CLASS_NAME,
+				mainClass
 		};
+		
+		String[] sootArgs = Arrays.copyOfRange(basicArgs, 0, basicArgs.length + classNames.length);
+		for (int i = 0; i < classNames.length; i++) sootArgs[basicArgs.length + i] = classNames[i];
+		return sootArgs;
 	}
 	
 	public static void runInstrumentedClass(String className) {
@@ -93,12 +138,13 @@ public class EntryPoint {
 	}
 	
 	public static void main(String[] args) {
-		String className = readArgs(args);
+		String[] extraClasses = readArgs(args);
+		printArgs(extraClasses);
+		System.out.println();
 		
 		setSootClassPath();
 		setJimpleInstrumenter();
-		soot.Main.main(generateSootArgs(className));
-		
-		runInstrumentedClass(className);
+		soot.Main.main(generateSootArgs(args, extraClasses));
+		if (flag_main_found) runInstrumentedClass(mainClass);
 	}
 }
