@@ -15,6 +15,7 @@ public class Trace {
 	UPDATE_INVOKE_METHOD, 
 	UPDATE_RETURN_METHOD,
 	INIT_EXAMPLE_METHOD,
+	INIT_LOCAL_METHOD,
 	FINISH_METHOD;
 	
 	static Map<String, List<Example>> methodsExamples;
@@ -25,6 +26,7 @@ public class Trace {
 		UPDATE_INVOKE_METHOD = "UpdateInvoke";
 		UPDATE_RETURN_METHOD = "UpdateReturn";
 		INIT_EXAMPLE_METHOD = "newExample";
+		INIT_LOCAL_METHOD = "InitLocal";
 		FINISH_METHOD = "Finish";
 		
 		methodsExamples = new HashMap<>();
@@ -38,6 +40,10 @@ public class Trace {
 	public static void newExample(String functionName) {
 		methodsExamples.putIfAbsent(functionName, new LinkedList<>());
 		workingExamples.push(new Example(functionName));
+	}
+	
+	public static void InitLocal(String name, boolean isPrimitive) {
+		workingExamples.peek().InitLocal(name, isPrimitive);;
 	}
 	
 	public static void Finish() {

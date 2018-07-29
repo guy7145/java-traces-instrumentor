@@ -106,12 +106,18 @@ public class MyBodyTransformer extends BodyTransformer {
 		for (Unit unit : units) {
 			if (Selection.MatchUnit(unit) instanceof CaseIdentityStmtParameter) continue;
 			units.insertBefore(stmt, unit);
+			addInitLocalsPatch(method);
 			return;
 		}
 	}
 
-	public static void addInitLocalsPatch() {
-
+	public static void addInitLocalsPatch(SootMethod method) {
+		for (Local local : method.getActiveBody().getLocals()) {
+			if (!Selection.isTempVar(local.getName())) {
+				System.out.println(local.getName());
+				System.out.println(Selection.isTypePrimitive(local.getType()));
+			}
+		}
 	}
 
 	private Stmt createFinishInvocation() {
