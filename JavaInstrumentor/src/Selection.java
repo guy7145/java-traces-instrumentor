@@ -62,8 +62,6 @@ public class Selection {
 	}
 	
 	public static boolean isTempVar(Value var) {
-		// $r1
-//		return varName.length() >= 3 && varName.charAt(0) == '$' && varName.charAt(1) != '$';
 		String varName = var.toString();
 		return varName.equals(MyBodyTransformer.MY_PRIMITIVE_LOCAL_NAME)
 				|| varName.equals(MyBodyTransformer.MY_REF_LOCAL_NAME);
@@ -83,14 +81,7 @@ public class Selection {
 	
 	public static boolean isPrimitive(Value val) {
 		Type valType = val.getType();
-		boolean isPrimitive = !(valType instanceof RefType || valType instanceof ArrayType);
-
-//		System.out.println(valType);
-//		System.out.println(valType instanceof RefType);
-//		System.out.println(valType instanceof ArrayType);
-//		System.out.printf("type of %s is %s (%s)\n", val.toString(), val.getType(), isPrimitive ? "Primitive" : "RefType");
-
-		return isPrimitive;
+		return !(valType instanceof RefType || valType instanceof ArrayType);
 	}
 	
 	public static Case<Unit> MatchUnit(Unit unit) {

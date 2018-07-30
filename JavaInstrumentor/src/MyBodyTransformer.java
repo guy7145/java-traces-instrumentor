@@ -34,6 +34,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
@@ -83,10 +84,7 @@ public class MyBodyTransformer extends BodyTransformer {
 
 		units.insertBefore(generateVoidInvocationStmt(updateReturn), patchedUnit); // is it different when you return a value (return a + b)?
 
-		if (Selection.isMainMethod(method)) {
-			System.out.println("found main!");
-			units.insertBefore(createFinishInvocation(), patchedUnit);
-		}
+		if (Selection.isMainMethod(method)) units.insertBefore(createFinishInvocation(), patchedUnit);
 	}
 
 	private void patchInvoke(Unit patchedUnit, PatchingChain<Unit> methodUnits, CaseInvoke invocation) {
@@ -95,30 +93,30 @@ public class MyBodyTransformer extends BodyTransformer {
 		methodUnits.insertAfter(stmt, patchedUnit);
 	}
 	
+	public static String getFieldName(InstanceFieldRef field) {
+		return field.getBase().toString() + "." + field.getField().getName();
+	}
+	
 	private void patchAssignField(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
-		FieldRef fielfRef = (FieldRef)assignment.lhs;
+		InstanceFieldRef fielfRef = (InstanceFieldRef)assignment.lhs;
+		
 		Value mylocal = Selection.isPrimitive(fielfRef) ? myPrimitiveLocal : myRefLocal;
 		Value rval = Selection.isPrimitive(fielfRef) ? fielfRef : StringConstant.v(fielfRef.toString());
-		try {
+		
 		Stmt assignTmpStmt = Jimple.v().newAssignStmt(mylocal, fielfRef);
 		
 		Stmt invokeStmt = 
 				Jimple.v().newInvokeStmt(
 						Jimple.v().newStaticInvokeExpr(
 								updaterMethodRef, 
-								StringConstant.v(assignment.lhs.toString()),
-								rval
+								StringConstant.v(getFieldName(fielfRef)),
+								mylocal
 								)
 						);
 		
 		methodUnits.insertAfter(assignTmpStmt, anchor);
 		anchor = assignTmpStmt;
 		methodUnits.insertAfter(invokeStmt, anchor);
-		} catch(Exception e) {
-			System.out.println(fielfRef);
-			int i = 0;
-			System.out.println(i);
-		}
 	}
 	
 	private void patchAssignNormal(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
@@ -142,7 +140,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	
 	private void dispatchAssignment(CaseAssign assignment, Unit patchedUnit, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		Value lval = assignment.lhs;
-		if (lval instanceof JInstanceFieldRef) patchAssignField(assignment, patchedUnit, methodUnits, updaterMethodRef);
+		if (lval instanceof InstanceFieldRef) patchAssignField(assignment, patchedUnit, methodUnits, updaterMethodRef);
 		else if (lval instanceof JArrayRef) patchAssignArray(assignment, patchedUnit, methodUnits, updaterMethodRef);
 		else patchAssignNormal(assignment, patchedUnit, methodUnits, updaterMethodRef);
 	}
@@ -153,7 +151,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		SootMethod updaterMethod = Selection.isPrimitive(lval) ? updateAssignmentPrimitive : updateAssignmentObject;
 		dispatchAssignment(assignment, patchedUnit, method.getActiveBody().getUnits(), updaterMethod.makeRef());
 	}
-
+	
 	private void applyPatch(Unit patchedUnit, SootMethod method, Map<String, Local> methodLocals) throws UnexpectedException {
 		PatchingChain<Unit> methodUnits = method.getActiveBody().getUnits();
 		Case<Unit> c = Selection.MatchUnit(patchedUnit);
@@ -162,7 +160,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		else if (Selection.isInvokeStmt(c)) patchInvoke(patchedUnit, methodUnits, (CaseInvoke)c);
 		else if (Selection.isReturnStmt(c)) patchReturn(patchedUnit, method);
 
-//		else throw new UnexpectedException("unknown case " + c.getClass().getName());
+		else throw new UnexpectedException("unknown case " + c.getClass().getName());
 	}
 
 	public static Map<String, Local> mapLocals(Body body) {
@@ -232,7 +230,6 @@ public class MyBodyTransformer extends BodyTransformer {
 		String[] second = method.getSignature().split(": ")[1].split(" ");
 		StringBuilder ans = new StringBuilder(second[1].split("\\(")[0]);
 		ans.append("(");
-
 		Set<String> set = locals.keySet();
 		int i = 0;
 		for(String s : set) {
@@ -251,15 +248,12 @@ public class MyBodyTransformer extends BodyTransformer {
 		
 		System.out.printf(ans+"\n"); // <tests.factorial: int fact(int)>
 	}
-
+	
 	@Override
 	protected void internalTransform(Body body, String phaseName, Map<String, String> options) {		
 		SootMethod method = body.getMethod();
-		if (Selection.shouldIgnoreMethod(method)) {
-			System.err.printf("ignoring %s\n", method.getSignature());
-			return;
-		} else System.out.printf("patching %s\n", method.getSignature());
-		
+		if (Selection.shouldIgnoreMethod(method)) return;
+		System.out.printf("patching %s\n", method.getSignature());
 
 		mapTypes(method.getDeclaringClass());
 		
@@ -267,7 +261,6 @@ public class MyBodyTransformer extends BodyTransformer {
 		addMyLocals(body);
 		getMethodSignatureSpec(method);
 		
-		int lineNumber = 1;
 		Iterator<Unit> snapIter = method
 				.getActiveBody()
 				.getUnits()
@@ -278,8 +271,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		while (snapIter.hasNext()) {
 			Unit unit = snapIter.next();
 			boolean ignoreUnit = Selection.shouldIgnoreUnit(unit);
-			(ignoreUnit ? System.err : System.out).printf("(%s)\t%d. %s\n", ignoreUnit ? "ignoring" : "recording", lineNumber++, unit);
-
+			
 			if (!ignoreUnit) {
 				try {
 					applyPatch(unit, method, locals);
@@ -289,7 +281,6 @@ public class MyBodyTransformer extends BodyTransformer {
 				}
 			}
 		}
-		System.out.println("finished patching.");
 	}
 
 	private void addMyLocals(Body body) {
