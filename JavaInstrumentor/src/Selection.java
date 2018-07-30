@@ -61,31 +61,34 @@ public class Selection {
 		return c instanceof CaseInvoke;
 	}
 	
-	public static boolean isTempVar(String varName) {
+	public static boolean isTempVar(Value var) {
 		// $r1
 //		return varName.length() >= 3 && varName.charAt(0) == '$' && varName.charAt(1) != '$';
+		String varName = var.toString();
 		return varName.equals(MyBodyTransformer.MY_PRIMITIVE_LOCAL_NAME)
 				|| varName.equals(MyBodyTransformer.MY_REF_LOCAL_NAME);
 	}
 	
+	public static boolean shouldIgnoreLocal(Value val) {
+		return isTempVar(val) || !isPrimitive(val); // the variable was actually defined in the instrumented program and it is not an object
+	}
+	
 	public static boolean shouldIgnoreUnit(Unit unit) {
 		Case<Unit> c = commandMatcher.match(unit);
-		if (isAssignStmt(c)) {
-			String varName = ((CaseAssign)c).lhs.toString();
-			if (!isTempVar(varName)) return false; // the variable was actually defined in the instrumented program
-		} else if (isInvokeStmt(c) || isReturnStmt(c)) return false;
-		
-		return true;
+		if (isAssignStmt(c)) 
+			return shouldIgnoreLocal(((CaseAssign)c).lhs);
+		else 
+			return !(isInvokeStmt(c) || isReturnStmt(c));
 	}
 	
 	public static boolean isPrimitive(Value val) {
 		Type valType = val.getType();
 		boolean isPrimitive = !(valType instanceof RefType || valType instanceof ArrayType);
 
-		System.out.println(valType);
-		System.out.println(valType instanceof RefType);
-		System.out.println(valType instanceof ArrayType);
-		System.out.printf("type of %s is %s (%s)\n", val.toString(), val.getType(), isPrimitive ? "Primitive" : "RefType");
+//		System.out.println(valType);
+//		System.out.println(valType instanceof RefType);
+//		System.out.println(valType instanceof ArrayType);
+//		System.out.printf("type of %s is %s (%s)\n", val.toString(), val.getType(), isPrimitive ? "Primitive" : "RefType");
 
 		return isPrimitive;
 	}

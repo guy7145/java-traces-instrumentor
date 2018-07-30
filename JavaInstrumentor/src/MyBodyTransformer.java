@@ -110,9 +110,9 @@ public class MyBodyTransformer extends BodyTransformer {
 								)
 						);
 		
-//		methodUnits.insertAfter(assignTmpStmt, anchor);
-//		anchor = assignTmpStmt;
-//		methodUnits.insertAfter(invokeStmt, anchor);
+		methodUnits.insertAfter(assignTmpStmt, anchor);
+		anchor = assignTmpStmt;
+		methodUnits.insertAfter(invokeStmt, anchor);
 		} catch(Exception e) {
 			System.out.println(fielfRef);
 			int i = 0;
@@ -166,11 +166,15 @@ public class MyBodyTransformer extends BodyTransformer {
 
 	public static Map<String, Local> mapLocals(Body body) {
 		Map<String, Local> map = new HashMap<String, Local>();
-		for (Local local : body.getLocals()) map.put(local.getName(), local);
+		
+		for (Local local : body.getLocals())
+			if (!Selection.shouldIgnoreLocal(local))
+				map.put(local.getName(), local);
+		
 		return map;
 	}
 
-	public static void addInitExamplePatch(SootMethod method) {
+	public void addInitExamplePatch(SootMethod method) {
 
 		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(initExample.makeRef(), StringConstant.v(method.getName()));
 		Stmt stmt = Jimple.v().newInvokeStmt(exp);
@@ -184,9 +188,9 @@ public class MyBodyTransformer extends BodyTransformer {
 		}
 	}
 	
-	public static void addInitLocalsPatch(SootMethod method, Unit anchor) {
-		for (Local local : method.getActiveBody().getLocals()) {
-			if (!Selection.isTempVar(local.getName())) {
+	public void addInitLocalsPatch(SootMethod method, Unit anchor) {
+		for (Local local : locals.values()) {
+			if (!Selection.shouldIgnoreLocal(local)) {
 				InvokeExpr exp = Jimple.v().newStaticInvokeExpr(
 						initLocalMethod.makeRef(), 
 						StringConstant.v(local.getName()), 
@@ -208,13 +212,6 @@ public class MyBodyTransformer extends BodyTransformer {
 		if (local.getType() instanceof RefType) {
 			System.out.printf("type %s {\n", local.getName());
 			for (SootField field : RefType.v(local.getType().toString()).getSootClass().getFields()) {
-//				System.out.println("field:");
-//				System.out.println(f.getName());
-//				System.out.println(f.getModifiers());
-//				System.out.println(f.getSignature());
-//				System.out.println(f.getSubSignature());
-//				System.out.println(f.getDeclaringClass());
-//				System.out.println(f.getType());
 				mapValue(field);
 			}
 			System.out.println("}");
@@ -276,7 +273,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	private void addMyLocals(Body body) {
 		myPrimitiveLocal = Jimple.v().newLocal(MY_PRIMITIVE_LOCAL_NAME, IntType.v());
 		myRefLocal = Jimple.v().newLocal(MY_REF_LOCAL_NAME, RefType.v(OBJECT_TYPE));
-//		body.getLocals().add(myPrimitiveLocal);
-//		body.getLocals().add(myRefLocal);
+		body.getLocals().add(myPrimitiveLocal);
+		body.getLocals().add(myRefLocal);
 	}
 }
