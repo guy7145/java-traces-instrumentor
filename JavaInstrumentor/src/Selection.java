@@ -1,5 +1,3 @@
-import javax.lang.model.type.ArrayType;
-
 import bgu.cs.util.Matcher;
 import bgu.cs.util.Matcher.Case;
 import bgu.cs.util.soot.CaseAssign;
@@ -8,6 +6,7 @@ import bgu.cs.util.soot.CaseReturnStmt;
 import bgu.cs.util.soot.CaseReturnVoidStmt;
 import flyClasses.Example;
 import flyClasses.Trace;
+import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -18,6 +17,8 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.Value;
+import soot.jimple.internal.JInstanceFieldRef;
 
 public class Selection {
 	static final String MAIN_SUB_SIGNATURE = "void main(java.lang.String[])";
@@ -62,7 +63,9 @@ public class Selection {
 	
 	public static boolean isTempVar(String varName) {
 		// $r1
-		return varName.length() >= 3 && varName.charAt(0) == '$' && varName.charAt(1) != '$';
+//		return varName.length() >= 3 && varName.charAt(0) == '$' && varName.charAt(1) != '$';
+		return varName.equals(MyBodyTransformer.MY_PRIMITIVE_LOCAL_NAME)
+				|| varName.equals(MyBodyTransformer.MY_REF_LOCAL_NAME);
 	}
 	
 	public static boolean shouldIgnoreUnit(Unit unit) {
@@ -75,8 +78,16 @@ public class Selection {
 		return true;
 	}
 	
-	public static boolean isTypePrimitive(Type type) {
-		return !(type instanceof RefType || type instanceof ArrayType);
+	public static boolean isPrimitive(Value val) {
+		Type valType = val.getType();
+		boolean isPrimitive = !(valType instanceof RefType || valType instanceof ArrayType);
+
+		System.out.println(valType);
+		System.out.println(valType instanceof RefType);
+		System.out.println(valType instanceof ArrayType);
+		System.out.printf("type of %s is %s (%s)\n", val.toString(), val.getType(), isPrimitive ? "Primitive" : "RefType");
+
+		return isPrimitive;
 	}
 	
 	public static Case<Unit> MatchUnit(Unit unit) {

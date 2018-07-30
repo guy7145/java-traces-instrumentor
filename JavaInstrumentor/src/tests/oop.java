@@ -26,6 +26,8 @@ public class oop {
 		public static C cmake() {
 			C c = new C();
 			c.c = 4;
+			Object o = new Object();
+			System.out.println(c.c);
 			return c;
 		}
 	}
@@ -45,8 +47,5 @@ public class oop {
 		System.out.println(c1.c);
 		System.out.println(c2.c);
 		System.out.println(a1.a + b.a + b.b + c1.c);
-		System.out.println(Math.pow(c1.c, c2.c));
-		System.out.println(b instanceof B);
-		System.out.println(a2 instanceof A);
 	}
 }
