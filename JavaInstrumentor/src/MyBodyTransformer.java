@@ -46,7 +46,7 @@ import soot.jimple.internal.JArrayRef;;
 public class MyBodyTransformer extends BodyTransformer {
 	public static String MY_PRIMITIVE_LOCAL_NAME = "mylocal", MY_REF_LOCAL_NAME = "$mylocal", OBJECT_TYPE = "java.lang.Object";
 	private static Local myPrimitiveLocal, myRefLocal;
-	
+
 	static SootClass traceClass;
 	static SootMethod 
 	updateAssignmentPrimitive, 
@@ -57,7 +57,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	initLocalMethod,
 	finishedInitLocalsMethod,
 	finishMethod;
-	
+
 	static {
 		traceClass = Scene.v().loadClassAndSupport(Trace.CLASS_NAME);
 		//		for (SootMethod m : traceClass.getMethods()) System.out.println(m.getName());
@@ -70,9 +70,9 @@ public class MyBodyTransformer extends BodyTransformer {
 		finishedInitLocalsMethod = traceClass.getMethodByName(Trace.FINISHED_INIT_LOCALS_METHOD);
 		finishMethod = traceClass.getMethodByName(Trace.FINISH_METHOD);
 	}
-	
+
 	private Map<String, Local> locals;
-	
+
 	private static Stmt generateVoidInvocationStmt(SootMethod method) {
 		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(method.makeRef());
 		Stmt stmt = Jimple.v().newInvokeStmt(exp);
@@ -92,19 +92,19 @@ public class MyBodyTransformer extends BodyTransformer {
 		Stmt stmt = Jimple.v().newInvokeStmt(exp);
 		methodUnits.insertAfter(stmt, patchedUnit);
 	}
-	
+
 	public static String getFieldName(InstanceFieldRef field) {
 		return field.getBase().toString() + "." + field.getField().getName();
 	}
-	
+
 	private void patchAssignField(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		InstanceFieldRef fielfRef = (InstanceFieldRef)assignment.lhs;
-		
+
 		Value mylocal = Selection.isPrimitive(fielfRef) ? myPrimitiveLocal : myRefLocal;
 		Value rval = Selection.isPrimitive(fielfRef) ? fielfRef : StringConstant.v(fielfRef.toString());
-		
+
 		Stmt assignTmpStmt = Jimple.v().newAssignStmt(mylocal, fielfRef);
-		
+
 		Stmt invokeStmt = 
 				Jimple.v().newInvokeStmt(
 						Jimple.v().newStaticInvokeExpr(
@@ -113,15 +113,15 @@ public class MyBodyTransformer extends BodyTransformer {
 								mylocal
 								)
 						);
-		
+
 		methodUnits.insertAfter(assignTmpStmt, anchor);
 		anchor = assignTmpStmt;
 		methodUnits.insertAfter(invokeStmt, anchor);
 	}
-	
+
 	private void patchAssignNormal(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		Value r = Selection.isPrimitive(assignment.lhs) ? assignment.lhs : StringConstant.v(assignment.rhs.toString());
-		
+
 		Stmt invokeStmt = 
 				Jimple.v().newInvokeStmt(
 						Jimple.v().newStaticInvokeExpr(
@@ -130,14 +130,14 @@ public class MyBodyTransformer extends BodyTransformer {
 								r
 								)
 						);
-		
+
 		methodUnits.insertAfter(invokeStmt, anchor);
 	}
-	
+
 	private void patchAssignArray(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		System.err.println("we do not support arrays yet");
 	}
-	
+
 	private void dispatchAssignment(CaseAssign assignment, Unit patchedUnit, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		Value lval = assignment.lhs;
 		if (lval instanceof InstanceFieldRef) patchAssignField(assignment, patchedUnit, methodUnits, updaterMethodRef);
@@ -149,7 +149,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		SootMethod updaterMethod = Selection.isPrimitive(assignment.lhs) ? updateAssignmentPrimitive : updateAssignmentObject;
 		dispatchAssignment(assignment, patchedUnit, method.getActiveBody().getUnits(), updaterMethod.makeRef());
 	}
-	
+
 	private void applyPatch(Unit patchedUnit, SootMethod method, Map<String, Local> methodLocals) throws UnexpectedException {
 		PatchingChain<Unit> methodUnits = method.getActiveBody().getUnits();
 		Case<Unit> c = Selection.MatchUnit(patchedUnit);
@@ -163,11 +163,11 @@ public class MyBodyTransformer extends BodyTransformer {
 
 	public static Map<String, Local> mapLocals(Body body) {
 		Map<String, Local> map = new HashMap<String, Local>();
-		
+
 		for (Local local : body.getLocals())
 			if (!Selection.shouldIgnoreLocal(local))
 				map.put(local.getName(), local);
-		
+
 		return map;
 	}
 
@@ -184,7 +184,7 @@ public class MyBodyTransformer extends BodyTransformer {
 			return;
 		}
 	}
-	
+
 	public void addInitLocalsPatch(SootMethod method, Unit anchor) {
 		for (Local local : locals.values()) {
 			if (!Selection.shouldIgnoreLocal(local)) {
@@ -197,14 +197,14 @@ public class MyBodyTransformer extends BodyTransformer {
 				method.getActiveBody().getUnits().insertBefore(stmt, anchor);
 			}
 		}
-		
+
 		method.getActiveBody().getUnits().insertBefore(generateVoidInvocationStmt(finishedInitLocalsMethod), anchor);
 	}
 
 	private Stmt createFinishInvocation() {
 		return generateVoidInvocationStmt(finishMethod);
 	}
-	
+
 	private static void mapValue(SootField local) {
 		if (local.getType() instanceof RefType) {
 			System.out.printf("type %s {\n", local.getName());
@@ -215,7 +215,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		}
 		else System.out.printf("%s:%s\n",local.getName(), local.getType());
 	}
-	
+
 	private static void mapTypes(SootClass sootClass) {
 		System.out.printf("type %s {\n", sootClass);
 		for (SootField field : sootClass.getFields()) {
@@ -223,7 +223,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		}
 		System.out.println("}");
 	}
-	
+
 	private String getMethodSignatureSpec(SootMethod method) {
 		String[] second = method.getSignature().split(": ")[1].split(" ");
 		StringBuilder ans = new StringBuilder(second[1].split("\\(")[0]);
@@ -240,13 +240,17 @@ public class MyBodyTransformer extends BodyTransformer {
 			}
 			i++;
 		}
-		ans.append(") -> (returnLocal:");
-		ans.append(second[0]);
-		ans.append(")");
-		
+		if(second[0].equals("void")) {
+			ans.append(") -> ()");
+		}else {
+			ans.append(") -> (returnLocal:");
+			ans.append(second[0]);
+			ans.append(")");
+		}
+
 		return ans.toString();
 	}
-	
+
 	@Override
 	protected void internalTransform(Body body, String phaseName, Map<String, String> options) {		
 		SootMethod method = body.getMethod();
@@ -254,11 +258,11 @@ public class MyBodyTransformer extends BodyTransformer {
 		System.out.printf("patching %s\n", method.getSignature());
 
 		mapTypes(method.getDeclaringClass());
-		
+
 		locals = mapLocals(body);
 		addMyLocals(body);
 		getMethodSignatureSpec(method);
-		
+
 		Iterator<Unit> snapIter = method
 				.getActiveBody()
 				.getUnits()
@@ -269,7 +273,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		while (snapIter.hasNext()) {
 			Unit unit = snapIter.next();
 			boolean ignoreUnit = Selection.shouldIgnoreUnit(unit);
-			
+
 			if (!ignoreUnit) {
 				try {
 					applyPatch(unit, method, locals);
