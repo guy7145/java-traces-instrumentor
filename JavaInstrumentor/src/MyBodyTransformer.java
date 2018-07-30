@@ -231,7 +231,22 @@ public class MyBodyTransformer extends BodyTransformer {
 	}
 	
 	private static void getMethodSignatureSpec(SootMethod method) {
-//		System.out.printf("signature: %s\n", method.getSignature().split(" ")); // <tests.factorial: int fact(int)>
+		String[] first = method.getSignature().split(": ");
+		String[] second = first[1].split(" ");
+		String returnType = second[0];
+		String[] third = second[1].split("\\(");
+		String funcName = third[0];
+		String[] firth = third[1].split(",");
+		String ans = funcName + "(";
+		for(int i = 0 ; i < firth.length ; i++) {
+			if(i == firth.length-1)
+				ans+= "mut i"+i+":"+firth[i].substring(0, firth[i].length()-1);
+			else
+				ans+= "mut i"+i+":"+firth[i];
+		}
+		ans += " -> (returnLocal:int)";
+		
+		System.out.printf(ans+"\n"); // <tests.factorial: int fact(int)>
 	}
 
 	@Override
