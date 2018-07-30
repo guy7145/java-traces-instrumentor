@@ -1,6 +1,8 @@
 import java.rmi.UnexpectedException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +58,8 @@ public class MyBodyTransformer extends BodyTransformer {
 	initExample,
 	initLocalMethod,
 	finishedInitLocalsMethod,
-	finishMethod;
+	finishMethod,
+	defTypesMethod;
 	
 	static {
 		traceClass = Scene.v().loadClassAndSupport(Trace.CLASS_NAME);
@@ -69,9 +72,14 @@ public class MyBodyTransformer extends BodyTransformer {
 		initLocalMethod = traceClass.getMethodByName(Trace.INIT_LOCAL_METHOD);
 		finishedInitLocalsMethod = traceClass.getMethodByName(Trace.FINISHED_INIT_LOCALS_METHOD);
 		finishMethod = traceClass.getMethodByName(Trace.FINISH_METHOD);
+		defTypesMethod = traceClass.getMethodByName(Trace.DEF_TYPES_METHOD);
 	}
 	
 	private Map<String, Local> locals;
+	private String[] userClasses;
+	public MyBodyTransformer(String[] userClasses) {
+		this.userClasses = userClasses;
+	}
 	
 	private static Stmt generateVoidInvocationStmt(SootMethod method) {
 		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(method.makeRef());
@@ -161,25 +169,51 @@ public class MyBodyTransformer extends BodyTransformer {
 		else throw new UnexpectedException("unknown case " + c.getClass().getName());
 	}
 
-	public static Map<String, Local> mapLocals(Body body) {
+//	private static void mapClass(RefType obj) {
+//		for (SootField f : obj.getSootClass().getFields()) {
+//			if (!f.isPublic()) continue;
+//			System.out.printf("%s:%s\n", f.getName(), f.getType());
+//			if (Selection.isObject(f.getType())) 
+//				mapClass(Selection.asObject(f.getType()));
+//		}
+//	}
+	
+	public Map<String, Local> mapLocals(Body body) {
 		Map<String, Local> map = new HashMap<String, Local>();
 		
-		for (Local local : body.getLocals())
+		for (Local local : body.getLocals()) {
+//			if (Selection.isObject(local.getType())) {
+//				System.out.printf("%s:%s\n", local.getName(), local.getType());
+//				mapClass(Selection.asObject(local.getType()));
+//			}
 			if (!Selection.shouldIgnoreLocal(local))
 				map.put(local.getName(), local);
+		}
 		
 		return map;
 	}
 
 	public void addInitExamplePatch(SootMethod method) {
-
-		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(initExample.makeRef(), StringConstant.v(getMethodSignatureSpec(method)));
-		Stmt stmt = Jimple.v().newInvokeStmt(exp);
-
+		Stmt initExampleStmt = Jimple.v().newInvokeStmt(
+				Jimple.v().newStaticInvokeExpr(
+						initExample.makeRef(), 
+						StringConstant.v(getMethodSignatureSpec(method))
+						)
+				);
+		
+		Stmt setTypesStmt = Jimple.v().newInvokeStmt(
+				Jimple.v().newStaticInvokeExpr(
+						defTypesMethod.makeRef(), 
+						StringConstant.v(mapTypes())
+						)
+				);
+		
+		
 		PatchingChain<Unit> units = method.getActiveBody().getUnits();
 		for (Unit unit : units) {
 			if (Selection.MatchUnit(unit) instanceof CaseIdentityStmtParameter) continue;
-			units.insertBefore(stmt, unit);
+			units.insertBefore(setTypesStmt, unit);
+			units.insertBefore(initExampleStmt, unit);
 			addInitLocalsPatch(method, unit);
 			return;
 		}
@@ -205,23 +239,26 @@ public class MyBodyTransformer extends BodyTransformer {
 		return generateVoidInvocationStmt(finishMethod);
 	}
 	
-	private static void mapValue(SootField local) {
-		if (local.getType() instanceof RefType) {
-			System.out.printf("type %s {\n", local.getName());
-			for (SootField field : RefType.v(local.getType().toString()).getSootClass().getFields()) {
-				mapValue(field);
-			}
-			System.out.println("}");
-		}
-		else System.out.printf("%s:%s\n",local.getName(), local.getType());
-	}
+//	private static void mapValue(SootField local) {
+//		if (local.getType() instanceof RefType) {
+//			System.out.printf("type %s {\n", local.getName());
+//			for (SootField field : RefType.v(local.getType().toString()).getSootClass().getFields()) {
+//				mapValue(field);
+//			}
+//			System.out.println("}");
+//		}
+//		else System.out.printf("%s:%s\n",local.getName(), local.getType());
+//	}
 	
-	private static void mapTypes(SootClass sootClass) {
-		System.out.printf("type %s {\n", sootClass);
-		for (SootField field : sootClass.getFields()) {
-			mapValue(field);
+	private String mapTypes() {
+		StringBuilder sb = new StringBuilder();
+		for (String className : userClasses) {
+			SootClass sc = Scene.v().getSootClass(className);
+			sb.append(String.format("%s {\n", sc.getName()));
+			for (SootField f : sc.getFields()) sb.append(String.format("\t%s:%s\n", f.getName(), f.getType()));
+			sb.append("}\n");
 		}
-		System.out.println("}");
+		return sb.toString();
 	}
 	
 	private String getMethodSignatureSpec(SootMethod method) {
@@ -252,15 +289,13 @@ public class MyBodyTransformer extends BodyTransformer {
 		SootMethod method = body.getMethod();
 		if (Selection.shouldIgnoreMethod(method)) return;
 		System.out.printf("patching %s\n", method.getSignature());
-
-		mapTypes(method.getDeclaringClass());
 		
 		locals = mapLocals(body);
 		addMyLocals(body);
 		getMethodSignatureSpec(method);
 		
-		Iterator<Unit> snapIter = method
-				.getActiveBody()
+		Iterator<Unit> snapIter = 
+				body
 				.getUnits()
 				.snapshotIterator(); // snapshot is needed because we iterate the chain while changing it
 

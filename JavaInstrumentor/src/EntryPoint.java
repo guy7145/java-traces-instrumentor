@@ -97,10 +97,10 @@ public class EntryPoint {
 		Scene.v().setSootClassPath(classpaths.toString());
 	}
 	
-	public static void setJimpleInstrumenter() {
+	public static void setJimpleInstrumenter(String[] userClasses) {
 		final String JIMPLE_TRANSFORMATION_PACK = "jtp";
 		Pack jtp = PackManager.v().getPack(JIMPLE_TRANSFORMATION_PACK);
-		jtp.add(new Transform("jtp.instrumentation-phsae", new MyBodyTransformer()));
+		jtp.add(new Transform("jtp.instrumentation-phsae", new MyBodyTransformer(userClasses)));
 	}
 	
 	public static String[] generateSootArgs(String[] args, String[] classNames) {
@@ -139,9 +139,13 @@ public class EntryPoint {
 	public static void main(String[] args) {
 		String[] extraClasses = readArgs(args);
 		printArgs(extraClasses);
+		
+		String[] allClasses = Arrays.copyOfRange(extraClasses, 0, extraClasses.length + 1);
+		allClasses[extraClasses.length] = mainClass;
+		
 		System.out.println(String.join(" ", generateSootArgs(args, extraClasses)));
 		setSootClassPath();
-		setJimpleInstrumenter();
+		setJimpleInstrumenter(allClasses);
 		soot.Main.main(generateSootArgs(args, extraClasses));
 		if (!flag_jimple) runInstrumentedClass(mainClass);
 	}

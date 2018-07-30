@@ -15,7 +15,6 @@ public class Example {
 	public static final String CLASS_NAME = "flyClasses.Example";
 	private String functionName;
 	private List<String> stateReports;
-	
 	private Map<String, Object> locals;
 	
 	public Example(String functionName) {

@@ -84,6 +84,14 @@ public class Selection {
 		return !(valType instanceof RefType || valType instanceof ArrayType);
 	}
 	
+	public static boolean isObject(Type type) {
+		return type instanceof RefType;
+	}
+	
+	public static RefType asObject(Object val) {
+		return (RefType) val;
+	}
+	
 	public static Case<Unit> MatchUnit(Unit unit) {
 		return commandMatcher.match(unit);
 	}

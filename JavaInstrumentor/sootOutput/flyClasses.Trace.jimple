@@ -181,7 +181,7 @@ public class flyClasses.Trace extends java.lang.Object
 
         $r7[0] = r0;
 
-        virtualinvoke $r8.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("%s() -> () {\n", $r7);
+        virtualinvoke $r8.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("%s {\n", $r7);
 
         $r10 = <flyClasses.Trace: java.util.Map methodsExamples>;
 

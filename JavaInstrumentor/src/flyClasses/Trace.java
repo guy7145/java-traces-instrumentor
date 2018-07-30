@@ -17,10 +17,14 @@ public class Trace {
 	INIT_EXAMPLE_METHOD,
 	INIT_LOCAL_METHOD,
 	FINISHED_INIT_LOCALS_METHOD,
-	FINISH_METHOD;
+	FINISH_METHOD,
+	DEF_TYPES_METHOD;
 	
+	
+	static String types = null;
 	static Map<String, List<Example>> methodsExamples;
 	static Stack<Example> workingExamples;
+	
 	static {
 		UPDATE_ASSIGNMENT_PRIMITIVE_METHOD = "UpdateAssignmentPrimitive";
 		UPDATE_ASSIGNMENT_OBJECT_METHOD = "UpdateAssignmentObject";
@@ -30,9 +34,10 @@ public class Trace {
 		INIT_LOCAL_METHOD = "InitLocal";
 		FINISHED_INIT_LOCALS_METHOD = "FinishedInitLocals";
 		FINISH_METHOD = "Finish";
+		DEF_TYPES_METHOD = "defTypes";
 		
 		methodsExamples = new HashMap<>();
-		workingExamples = new Stack();
+		workingExamples = new Stack<>();
 	}
 	
 	public static void addSample(String sample) {
@@ -42,6 +47,10 @@ public class Trace {
 	public static void newExample(String functionName) {
 		methodsExamples.putIfAbsent(functionName, new LinkedList<>());
 		workingExamples.push(new Example(functionName));
+	}
+	
+	public static void defTypes(String typesString) {
+		types = typesString;
 	}
 	
 	public static void InitLocal(String name, boolean isPrimitive) {
@@ -54,6 +63,8 @@ public class Trace {
 	
 	public static void Finish() {
 		for (String key : methodsExamples.keySet()) {
+			System.out.println(types);
+			
 			System.out.printf("%s {\n", key);
 			
 			for (Example e : methodsExamples.get(key)) {
