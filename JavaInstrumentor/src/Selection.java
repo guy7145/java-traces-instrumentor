@@ -70,6 +70,7 @@ public class Selection {
 	}
 	
 	public static boolean shouldIgnoreLocal(Value val) {
+		System.out.printf("ignore %s? %s\n", val, isTempVar(val) || !isPrimitive(val) ? "yes" : "no");
 		return isTempVar(val) || !isPrimitive(val); // the variable was actually defined in the instrumented program and it is not an object
 	}
 	

@@ -33,6 +33,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
@@ -94,30 +95,34 @@ public class MyBodyTransformer extends BodyTransformer {
 		methodUnits.insertAfter(stmt, patchedUnit);
 	}
 	
+	public static String getFieldName(InstanceFieldRef field) {
+		return field.getBase().toString() + "." + field.getField().getName();
+	}
+	
 	private void patchAssignField(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
-		FieldRef fielfRef = (FieldRef)assignment.lhs;
+		System.out.println("patching field assignment");
+		InstanceFieldRef fielfRef = (InstanceFieldRef)assignment.lhs;
+		
 		Value mylocal = Selection.isPrimitive(fielfRef) ? myPrimitiveLocal : myRefLocal;
 		Value rval = Selection.isPrimitive(fielfRef) ? fielfRef : StringConstant.v(fielfRef.toString());
-		try {
+		
 		Stmt assignTmpStmt = Jimple.v().newAssignStmt(mylocal, fielfRef);
 		
 		Stmt invokeStmt = 
 				Jimple.v().newInvokeStmt(
 						Jimple.v().newStaticInvokeExpr(
 								updaterMethodRef, 
-								StringConstant.v(assignment.lhs.toString()),
-								rval
+								StringConstant.v(getFieldName(fielfRef)),
+								mylocal
 								)
 						);
+		
+		System.out.println(assignTmpStmt);
+		System.out.println(invokeStmt);
 		
 		methodUnits.insertAfter(assignTmpStmt, anchor);
 		anchor = assignTmpStmt;
 		methodUnits.insertAfter(invokeStmt, anchor);
-		} catch(Exception e) {
-			System.out.println(fielfRef);
-			int i = 0;
-			System.out.println(i);
-		}
 	}
 	
 	private void patchAssignNormal(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
@@ -141,7 +146,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	
 	private void dispatchAssignment(CaseAssign assignment, Unit patchedUnit, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		Value lval = assignment.lhs;
-		if (lval instanceof JInstanceFieldRef) patchAssignField(assignment, patchedUnit, methodUnits, updaterMethodRef);
+		if (lval instanceof InstanceFieldRef) patchAssignField(assignment, patchedUnit, methodUnits, updaterMethodRef);
 		else if (lval instanceof JArrayRef) patchAssignArray(assignment, patchedUnit, methodUnits, updaterMethodRef);
 		else patchAssignNormal(assignment, patchedUnit, methodUnits, updaterMethodRef);
 	}
