@@ -2,6 +2,7 @@ import java.rmi.UnexpectedException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.util.NotImplementedException;
 import org.omg.CORBA.UnionMember;
@@ -227,7 +228,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		System.out.println("}");
 	}
 	
-	private static void getMethodSignatureSpec(SootMethod method) {
+	private void getMethodSignatureSpec(SootMethod method) {
 		String[] first = method.getSignature().split(": ");
 		String[] second = first[1].split(" ");
 		String returnType = second[0];
@@ -235,11 +236,15 @@ public class MyBodyTransformer extends BodyTransformer {
 		String funcName = third[0];
 		String[] firth = third[1].split(",");
 		String ans = funcName + "(";
-		for(int i = 0 ; i < firth.length ; i++) {
-			if(i == firth.length-1)
-				ans+= "mut i"+i+":"+firth[i].substring(0, firth[i].length()-1);
+
+		Set<String> set = locals.keySet();
+		int i = 0;
+		for(String s : set) {
+			if(i == set.size()-1)
+				ans+= "mut "+s+":int)";
 			else
-				ans+= "mut i"+i+":"+firth[i];
+				ans+= "mut "+s+":int , ";
+			i++;
 		}
 		ans += " -> (returnLocal:int)";
 		
@@ -254,11 +259,12 @@ public class MyBodyTransformer extends BodyTransformer {
 			return;
 		} else System.out.printf("patching %s\n", method.getSignature());
 		
-		getMethodSignatureSpec(method);
+
 		mapTypes(method.getDeclaringClass());
 		
 		locals = mapLocals(body);
 		addMyLocals(body);
+		getMethodSignatureSpec(method);
 		
 		int lineNumber = 1;
 		Iterator<Unit> snapIter = method
