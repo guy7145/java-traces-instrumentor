@@ -229,24 +229,20 @@ public class MyBodyTransformer extends BodyTransformer {
 	}
 	
 	private void getMethodSignatureSpec(SootMethod method) {
-		String[] first = method.getSignature().split(": ");
-		String[] second = first[1].split(" ");
+		String[] second = method.getSignature().split(": ")[1].split(" ");
 		String returnType = second[0];
-		String[] third = second[1].split("\\(");
-		String funcName = third[0];
-		String[] firth = third[1].split(",");
-		String ans = funcName + "(";
+		String ans = second[1].split("\\(")[0] + "(";
 
 		Set<String> set = locals.keySet();
 		int i = 0;
 		for(String s : set) {
 			if(i == set.size()-1)
-				ans+= "mut "+s+":int)";
+				ans+= "mut "+s+":"+locals.get(s).getType()+")";
 			else
-				ans+= "mut "+s+":int , ";
+				ans+= "mut "+s+":"+locals.get(s).getType()+" , ";
 			i++;
 		}
-		ans += " -> (returnLocal:int)";
+		ans += " -> (returnLocal:"+returnType+")";
 		
 		System.out.printf(ans+"\n"); // <tests.factorial: int fact(int)>
 	}
