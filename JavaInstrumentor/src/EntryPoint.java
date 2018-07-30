@@ -9,7 +9,6 @@ import java.util.Arrays;
 import fj.data.Array;
 import flyClasses.Example;
 import flyClasses.Trace;
-import redundant.MyCounter;
 
 /**
  * Created by mian on 6/22/16.
@@ -140,11 +139,10 @@ public class EntryPoint {
 	public static void main(String[] args) {
 		String[] extraClasses = readArgs(args);
 		printArgs(extraClasses);
-		System.out.println();
-		
+		System.out.println(String.join(" ", generateSootArgs(args, extraClasses)));
 		setSootClassPath();
 		setJimpleInstrumenter();
 		soot.Main.main(generateSootArgs(args, extraClasses));
-		if (flag_main_found) runInstrumentedClass(mainClass);
+		if (!flag_jimple) runInstrumentedClass(mainClass);
 	}
 }

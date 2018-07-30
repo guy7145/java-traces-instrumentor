@@ -11,7 +11,6 @@ public class oop {
 	public static class B extends A {
 		int b;
 		public B() {
-			super();
 			b = 2;
 			a++;
 		}
@@ -34,20 +33,20 @@ public class oop {
 	
 	public static void main(String[] args) {
 		System.out.println(A.class.getName());
-		A a = new A();
+		A a1 = new A();
 		B b = new B();
 		C c1 = new C();
 		C c2 = C.cmake();
-		A ab = new B();
+		A a2 = new A();
 		
-		System.out.println(a.a);
+		System.out.println(a1.a);
 		System.out.println(b.b);
 		System.out.println(b.a);
 		System.out.println(c1.c);
 		System.out.println(c2.c);
-		System.out.println(a.a + b.a + b.b + c1.c);
+		System.out.println(a1.a + b.a + b.b + c1.c);
 		System.out.println(Math.pow(c1.c, c2.c));
-		System.out.println(ab instanceof B);
-		System.out.println(ab instanceof A);
+		System.out.println(b instanceof B);
+		System.out.println(a2 instanceof A);
 	}
 }

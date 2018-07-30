@@ -16,6 +16,7 @@ public class Trace {
 	UPDATE_RETURN_METHOD,
 	INIT_EXAMPLE_METHOD,
 	INIT_LOCAL_METHOD,
+	FINISHED_INIT_LOCALS_METHOD,
 	FINISH_METHOD;
 	
 	static Map<String, List<Example>> methodsExamples;
@@ -27,6 +28,7 @@ public class Trace {
 		UPDATE_RETURN_METHOD = "UpdateReturn";
 		INIT_EXAMPLE_METHOD = "newExample";
 		INIT_LOCAL_METHOD = "InitLocal";
+		FINISHED_INIT_LOCALS_METHOD = "FinishedInitLocals";
 		FINISH_METHOD = "Finish";
 		
 		methodsExamples = new HashMap<>();
@@ -44,6 +46,10 @@ public class Trace {
 	
 	public static void InitLocal(String name, boolean isPrimitive) {
 		workingExamples.peek().InitLocal(name, isPrimitive);;
+	}
+	
+	public static void FinishedInitLocals() {
+		workingExamples.peek().ReportState();
 	}
 	
 	public static void Finish() {
