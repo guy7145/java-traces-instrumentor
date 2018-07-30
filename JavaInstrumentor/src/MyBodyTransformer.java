@@ -146,9 +146,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	}
 
 	private void patchAssignment(Unit patchedUnit, Map<String, Local> methodLocals, SootMethod method, CaseAssign assignment) {
-		Value lval = assignment.lhs;
-		Value rval = assignment.rhs;
-		SootMethod updaterMethod = Selection.isPrimitive(lval) ? updateAssignmentPrimitive : updateAssignmentObject;
+		SootMethod updaterMethod = Selection.isPrimitive(assignment.lhs) ? updateAssignmentPrimitive : updateAssignmentObject;
 		dispatchAssignment(assignment, patchedUnit, method.getActiveBody().getUnits(), updaterMethod.makeRef());
 	}
 	
