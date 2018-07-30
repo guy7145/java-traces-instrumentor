@@ -26,8 +26,6 @@ public class oop {
 		public static C cmake() {
 			C c = new C();
 			c.c = 4;
-			Object o = new Object();
-			System.out.println(c.c);
 			return c;
 		}
 	}
@@ -40,12 +38,8 @@ public class oop {
 		C c1 = new C();
 		C c2 = C.cmake();
 		A a2 = new A();
-		
-		System.out.println(a1.a);
-		System.out.println(b.b);
-		System.out.println(b.a);
-		System.out.println(c1.c);
-		System.out.println(c2.c);
-		System.out.println(a1.a + b.a + b.b + c1.c);
+		a1.a = 4;
+		b.b = a1.a * c1.c;
+		c2.c--;
 	}
 }
