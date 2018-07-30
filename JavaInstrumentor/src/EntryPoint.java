@@ -1,12 +1,10 @@
 import soot.*;
-import soot.options.Options;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.Arrays;
 
-import fj.data.Array;
 import flyClasses.Example;
 import flyClasses.Trace;
 
@@ -86,8 +84,7 @@ public class EntryPoint {
 			for (String s : extraClasses) System.out.println(s);
 		}
 		
-		System.out.println();
-		System.out.println("end of arguments.");
+		System.out.println("END ARGUMENTS.");
 	}
 	
 	public static void setSootClassPath() {
@@ -130,9 +127,13 @@ public class EntryPoint {
 		try { 
 			System.out.printf("output of the instrumented \"%s\":\n", className);
 			Process p = builder.start();
+			p.waitFor();
+		} catch (InterruptedException e) {
+			System.out.println("bye bye");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("failed to start instrumented class with java");
+			System.exit(2);
 		}
 	}
 	
@@ -143,7 +144,6 @@ public class EntryPoint {
 		String[] allClasses = Arrays.copyOfRange(extraClasses, 0, extraClasses.length + 1);
 		allClasses[extraClasses.length] = mainClass;
 		
-		System.out.println(String.join(" ", generateSootArgs(args, extraClasses)));
 		setSootClassPath();
 		setJimpleInstrumenter(allClasses);
 		soot.Main.main(generateSootArgs(args, extraClasses));

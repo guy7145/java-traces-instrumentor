@@ -9,6 +9,8 @@ public class flyClasses.Trace extends java.lang.Object
     public static java.lang.String INIT_LOCAL_METHOD;
     public static java.lang.String FINISHED_INIT_LOCALS_METHOD;
     public static java.lang.String FINISH_METHOD;
+    public static java.lang.String DEF_TYPES_METHOD;
+    static java.lang.String types;
     static java.util.Map methodsExamples;
     static java.util.Stack workingExamples;
 
@@ -18,6 +20,8 @@ public class flyClasses.Trace extends java.lang.Object
         java.util.Stack $r1;
 
         <flyClasses.Trace: java.lang.String CLASS_NAME> = "flyClasses.Trace";
+
+        <flyClasses.Trace: java.lang.String types> = null;
 
         <flyClasses.Trace: java.lang.String UPDATE_ASSIGNMENT_PRIMITIVE_METHOD> = "UpdateAssignmentPrimitive";
 
@@ -34,6 +38,8 @@ public class flyClasses.Trace extends java.lang.Object
         <flyClasses.Trace: java.lang.String FINISHED_INIT_LOCALS_METHOD> = "FinishedInitLocals";
 
         <flyClasses.Trace: java.lang.String FINISH_METHOD> = "Finish";
+
+        <flyClasses.Trace: java.lang.String DEF_TYPES_METHOD> = "defTypes";
 
         $r0 = new java.util.HashMap;
 
@@ -109,6 +115,17 @@ public class flyClasses.Trace extends java.lang.Object
         return;
     }
 
+    public static void defTypes(java.lang.String)
+    {
+        java.lang.String r0;
+
+        r0 := @parameter0: java.lang.String;
+
+        <flyClasses.Trace: java.lang.String types> = r0;
+
+        return;
+    }
+
     public static void InitLocal(java.lang.String, boolean)
     {
         java.lang.String r0;
@@ -151,16 +168,16 @@ public class flyClasses.Trace extends java.lang.Object
 
     public static void Finish()
     {
-        java.lang.String r0, $r16, $r17;
+        java.lang.String r0, $r7, $r18, $r19;
         java.util.Iterator r1, r3;
         flyClasses.Example r2;
-        java.util.Map $r4, $r10;
+        java.util.Map $r4, $r12;
         java.util.Set $r5;
         boolean $z0, $z1;
-        java.lang.Object $r6, $r11, $r13;
-        java.lang.Object[] $r7, $r14;
-        java.io.PrintStream $r8, $r15, $r19;
-        java.util.List $r12;
+        java.lang.Object $r6, $r13, $r15;
+        java.io.PrintStream $r8, $r10, $r17, $r21;
+        java.lang.Object[] $r9, $r16;
+        java.util.List $r14;
 
         $r4 = <flyClasses.Trace: java.util.Map methodsExamples>;
 
@@ -177,47 +194,53 @@ public class flyClasses.Trace extends java.lang.Object
 
         $r8 = <java.lang.System: java.io.PrintStream out>;
 
-        $r7 = newarray (java.lang.Object)[1];
+        $r7 = <flyClasses.Trace: java.lang.String types>;
 
-        $r7[0] = r0;
+        virtualinvoke $r8.<java.io.PrintStream: void println(java.lang.String)>($r7);
 
-        virtualinvoke $r8.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("%s {\n", $r7);
+        $r10 = <java.lang.System: java.io.PrintStream out>;
 
-        $r10 = <flyClasses.Trace: java.util.Map methodsExamples>;
+        $r9 = newarray (java.lang.Object)[1];
 
-        $r11 = interfaceinvoke $r10.<java.util.Map: java.lang.Object get(java.lang.Object)>(r0);
+        $r9[0] = r0;
 
-        $r12 = (java.util.List) $r11;
+        virtualinvoke $r10.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("%s {\n", $r9);
 
-        r3 = interfaceinvoke $r12.<java.util.List: java.util.Iterator iterator()>();
+        $r12 = <flyClasses.Trace: java.util.Map methodsExamples>;
+
+        $r13 = interfaceinvoke $r12.<java.util.Map: java.lang.Object get(java.lang.Object)>(r0);
+
+        $r14 = (java.util.List) $r13;
+
+        r3 = interfaceinvoke $r14.<java.util.List: java.util.Iterator iterator()>();
 
         goto label3;
 
      label2:
-        $r13 = interfaceinvoke r3.<java.util.Iterator: java.lang.Object next()>();
+        $r15 = interfaceinvoke r3.<java.util.Iterator: java.lang.Object next()>();
 
-        r2 = (flyClasses.Example) $r13;
+        r2 = (flyClasses.Example) $r15;
 
-        $r15 = <java.lang.System: java.io.PrintStream out>;
+        $r17 = <java.lang.System: java.io.PrintStream out>;
 
-        $r14 = newarray (java.lang.Object)[1];
+        $r16 = newarray (java.lang.Object)[1];
 
-        $r16 = virtualinvoke r2.<flyClasses.Example: java.lang.String getExampleText()>();
+        $r18 = virtualinvoke r2.<flyClasses.Example: java.lang.String getExampleText()>();
 
-        $r17 = virtualinvoke $r16.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\n", "\n\t");
+        $r19 = virtualinvoke $r18.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\n", "\n\t");
 
-        $r14[0] = $r17;
+        $r16[0] = $r19;
 
-        virtualinvoke $r15.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("\t%s\n", $r14);
+        virtualinvoke $r17.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("\t%s\n", $r16);
 
      label3:
         $z1 = interfaceinvoke r3.<java.util.Iterator: boolean hasNext()>();
 
         if $z1 != 0 goto label2;
 
-        $r19 = <java.lang.System: java.io.PrintStream out>;
+        $r21 = <java.lang.System: java.io.PrintStream out>;
 
-        virtualinvoke $r19.<java.io.PrintStream: void println(java.lang.String)>("}");
+        virtualinvoke $r21.<java.io.PrintStream: void println(java.lang.String)>("}");
 
      label4:
         $z0 = interfaceinvoke r1.<java.util.Iterator: boolean hasNext()>();

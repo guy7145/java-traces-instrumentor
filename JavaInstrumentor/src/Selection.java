@@ -7,23 +7,18 @@ import bgu.cs.util.soot.CaseReturnVoidStmt;
 import flyClasses.Example;
 import flyClasses.Trace;
 import soot.ArrayType;
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.IntType;
-import soot.LongType;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.internal.JInstanceFieldRef;
 
 public class Selection {
 	static final String MAIN_SUB_SIGNATURE = "void main(java.lang.String[])";
 	
 	static Matcher<Unit> commandMatcher;
+	
 	static {
 		commandMatcher = new Matcher<>();
 		commandMatcher.addAllCasesFromPkg(bgu.cs.util.soot.JimpleCase.class.getPackage());
@@ -68,15 +63,17 @@ public class Selection {
 	}
 	
 	public static boolean shouldIgnoreLocal(Value val) {
-		return isTempVar(val) || !isPrimitive(val); // the variable was actually defined in the instrumented program and it is not an object
+		return isTempVar(val) || !isPrimitive(val);
+//		return isTempVar(val);
 	}
 	
 	public static boolean shouldIgnoreUnit(Unit unit) {
 		Case<Unit> c = commandMatcher.match(unit);
 		if (isAssignStmt(c)) 
 			return shouldIgnoreLocal(((CaseAssign)c).lhs);
-		else 
-			return !(isInvokeStmt(c) || isReturnStmt(c));
+		else if (isInvokeStmt(c)) return true;
+		else if (isReturnStmt(c)) return false;
+		else return true;
 	}
 	
 	public static boolean isPrimitive(Value val) {

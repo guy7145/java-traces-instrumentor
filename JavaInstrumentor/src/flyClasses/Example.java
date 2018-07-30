@@ -1,15 +1,9 @@
 package flyClasses;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import polyglot.ast.SourceFile;
 
 public class Example {
 	public static final String CLASS_NAME = "flyClasses.Example";

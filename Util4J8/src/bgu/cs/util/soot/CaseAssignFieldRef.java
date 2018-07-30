@@ -1,6 +1,6 @@
 package bgu.cs.util.soot;
 
-import soot.Local;
+
 import soot.SootField;
 import soot.Unit;
 import soot.jimple.FieldRef;
