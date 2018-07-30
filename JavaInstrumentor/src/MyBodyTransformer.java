@@ -173,7 +173,7 @@ public class MyBodyTransformer extends BodyTransformer {
 
 	public void addInitExamplePatch(SootMethod method) {
 
-		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(initExample.makeRef(), StringConstant.v(method.getName()));
+		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(initExample.makeRef(), StringConstant.v(getMethodSignatureSpec(method)));
 		Stmt stmt = Jimple.v().newInvokeStmt(exp);
 
 		PatchingChain<Unit> units = method.getActiveBody().getUnits();
@@ -224,7 +224,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		System.out.println("}");
 	}
 	
-	private void getMethodSignatureSpec(SootMethod method) {
+	private String getMethodSignatureSpec(SootMethod method) {
 		String[] second = method.getSignature().split(": ")[1].split(" ");
 		StringBuilder ans = new StringBuilder(second[1].split("\\(")[0]);
 		ans.append("(");
@@ -244,7 +244,7 @@ public class MyBodyTransformer extends BodyTransformer {
 		ans.append(second[0]);
 		ans.append(")");
 		
-		System.out.printf(ans+"\n"); // <tests.factorial: int fact(int)>
+		return ans.toString();
 	}
 	
 	@Override

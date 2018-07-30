@@ -54,7 +54,7 @@ public class Trace {
 	
 	public static void Finish() {
 		for (String key : methodsExamples.keySet()) {
-			System.out.printf("%s() -> () {\n", key);
+			System.out.printf("%s {\n", key);
 			
 			for (Example e : methodsExamples.get(key)) {
 				System.out.printf("\t%s\n", e.getExampleText().replaceAll("\n", "\n\t"));
