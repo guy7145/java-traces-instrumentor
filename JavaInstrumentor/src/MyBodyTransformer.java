@@ -31,6 +31,7 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
+import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.internal.JArrayRef;;
@@ -49,11 +50,11 @@ public class MyBodyTransformer extends BodyTransformer {
 	initLocalMethod,
 	finishedInitLocalsMethod,
 	finishMethod,
-	defTypesMethod;
+	defTypesMethod,
+	setDeltaModeMethod;
 
 	static {
 		traceClass = Scene.v().loadClassAndSupport(Trace.CLASS_NAME);
-		//		for (SootMethod m : traceClass.getMethods()) System.out.println(m.getName());
 		updateAssignmentPrimitive = traceClass.getMethodByName(Trace.UPDATE_ASSIGNMENT_PRIMITIVE_METHOD);
 		updateAssignmentObject = traceClass.getMethodByName(Trace.UPDATE_ASSIGNMENT_OBJECT_METHOD);
 		updateInvoke = traceClass.getMethodByName(Trace.UPDATE_INVOKE_METHOD);
@@ -63,12 +64,17 @@ public class MyBodyTransformer extends BodyTransformer {
 		finishedInitLocalsMethod = traceClass.getMethodByName(Trace.FINISHED_INIT_LOCALS_METHOD);
 		finishMethod = traceClass.getMethodByName(Trace.FINISH_METHOD);
 		defTypesMethod = traceClass.getMethodByName(Trace.DEF_TYPES_METHOD);
+		setDeltaModeMethod = traceClass.getMethodByName(Trace.SET_DELTA_MODE_METHOD);
 	}
 
 	private Map<String, Value> locals;
 	private String[] userClasses;
-	public MyBodyTransformer(String[] userClasses) {
+	private boolean deltaOnly, reportInvokes;
+	
+	public MyBodyTransformer(String[] userClasses, boolean deltaOnly, boolean reportInvokes) {
 		this.userClasses = userClasses;
+		this.deltaOnly = deltaOnly;
+		this.reportInvokes = reportInvokes;
 	}
 
 	private static Stmt generateVoidInvocationStmt(SootMethod method) {
@@ -85,14 +91,22 @@ public class MyBodyTransformer extends BodyTransformer {
 		if (Selection.isMainMethod(method)) units.insertBefore(createFinishInvocation(), patchedUnit);
 	}
 
-	private void patchInvoke(Unit patchedUnit, PatchingChain<Unit> methodUnits, CaseInvoke invocation) {
-		InvokeExpr exp = Jimple.v().newStaticInvokeExpr(updateInvoke.makeRef(), StringConstant.v(invocation.invoke.toString()));
-		Stmt stmt = Jimple.v().newInvokeStmt(exp);
-		methodUnits.insertAfter(stmt, patchedUnit);
+	protected void patchInvoke(Unit patchedUnit, PatchingChain<Unit> methodUnits, CaseInvoke invocation) {
+		// ignore
 	}
 
-	public static String getFieldName(InstanceFieldRef field) {
-		return field.getBase().toString() + "." + field.getField().getName();
+	public static String getFieldName(FieldRef field) {
+		String fieldName = field.getField().getName();
+		String base;
+		
+		if (field instanceof StaticFieldRef) base = ((StaticFieldRef)field).getField().getDeclaringClass().getName();
+		
+		else if (field instanceof InstanceFieldRef) {
+			base = ((InstanceFieldRef)field).getBase().toString();
+		}
+		else return field.toString();
+			
+		return base + "." + fieldName;
 	}
 
 	private void patchAssignField(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
@@ -118,7 +132,7 @@ public class MyBodyTransformer extends BodyTransformer {
 
 	private void patchAssignNormal(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		Value r = Selection.isPrimitive(assignment.lhs) ? assignment.lhs : StringConstant.v(assignment.rhs.toString());
-//		Value r = assignment.lhs;
+		
 		Stmt invokeStmt = 
 				Jimple.v().newInvokeStmt(
 						Jimple.v().newStaticInvokeExpr(
@@ -151,21 +165,18 @@ public class MyBodyTransformer extends BodyTransformer {
 		PatchingChain<Unit> methodUnits = method.getActiveBody().getUnits();
 		Case<Unit> c = Selection.MatchUnit(patchedUnit);
 
-		if (Selection.isAssignStmt(c)) patchAssignment(patchedUnit, method, (CaseAssign)c);
-		else if (Selection.isInvokeStmt(c)) patchInvoke(patchedUnit, methodUnits, (CaseInvoke)c);
-		else if (Selection.isReturnStmt(c)) patchReturn(patchedUnit, method);
+		if (Selection.isAssignStmt(c)) 
+			patchAssignment(patchedUnit, method, (CaseAssign)c);
+		
+		else if (Selection.isInvokeStmt(c)) {
+			if (reportInvokes)
+				patchInvoke(patchedUnit, methodUnits, (CaseInvoke)c);
+		}
+		else if (Selection.isReturnStmt(c)) 
+			patchReturn(patchedUnit, method);
 
 		else throw new UnexpectedException("unknown case " + c.getClass().getName());
 	}
-
-//	private static void mapClass(RefType obj) {
-//		for (SootField f : obj.getSootClass().getFields()) {
-//			if (!f.isPublic()) continue;
-//			System.out.printf("%s:%s\n", f.getName(), f.getType());
-//			if (Selection.isObject(f.getType())) 
-//				mapClass(Selection.asObject(f.getType()));
-//		}
-//	}
 	
 	public Map<String, Value> mapLocals(Body body) {
 		Map<String, Value> map = new HashMap<>();
@@ -195,10 +206,17 @@ public class MyBodyTransformer extends BodyTransformer {
 						)
 				);
 		
+		Stmt setDeltaStmt = Jimple.v().newInvokeStmt(
+				Jimple.v().newStaticInvokeExpr(
+						setDeltaModeMethod.makeRef(), 
+						IntConstant.v(deltaOnly ? 1 : 0)
+						)
+				);
 		
 		PatchingChain<Unit> units = method.getActiveBody().getUnits();
 		for (Unit unit : units) {
 			if (Selection.MatchUnit(unit) instanceof CaseIdentityStmt) continue;
+			units.insertBefore(setDeltaStmt, unit);
 			units.insertBefore(setTypesStmt, unit);
 			units.insertBefore(initExampleStmt, unit);
 			addInitLocalsPatch(method, unit);
@@ -207,7 +225,7 @@ public class MyBodyTransformer extends BodyTransformer {
 	}
 	
 	public static String getVariableName(Value v) {
-		if (v instanceof InstanceFieldRef) return getFieldName((InstanceFieldRef)v);
+		if (v instanceof FieldRef) return getFieldName((FieldRef)v);
 		else return v.toString();
 	}
 
@@ -228,17 +246,6 @@ public class MyBodyTransformer extends BodyTransformer {
 	private Stmt createFinishInvocation() {
 		return generateVoidInvocationStmt(finishMethod);
 	}
-	
-//	private static void mapValue(SootField local) {
-//		if (local.getType() instanceof RefType) {
-//			System.out.printf("type %s {\n", local.getName());
-//			for (SootField field : RefType.v(local.getType().toString()).getSootClass().getFields()) {
-//				mapValue(field);
-//			}
-//			System.out.println("}");
-//		}
-//		else System.out.printf("%s:%s\n",local.getName(), local.getType());
-//	}
 	
 	private String mapTypes() {
 		StringBuilder sb = new StringBuilder();

@@ -71,7 +71,7 @@ public class Selection {
 		Case<Unit> c = commandMatcher.match(unit);
 		if (isAssignStmt(c)) 
 			return shouldIgnoreLocal(((CaseAssign)c).lhs);
-		else if (isInvokeStmt(c)) return true;
+		else if (isInvokeStmt(c)) return false;
 		else if (isReturnStmt(c)) return false;
 		else return true;
 	}

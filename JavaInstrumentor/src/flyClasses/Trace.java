@@ -1,5 +1,8 @@
 package flyClasses;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,22 +15,26 @@ public class Trace {
 	public static String 
 	UPDATE_ASSIGNMENT_PRIMITIVE_METHOD, 
 	UPDATE_ASSIGNMENT_OBJECT_METHOD, 
+	UPDATE_ASSIGNMENT_STMT_METHOD,
 	UPDATE_INVOKE_METHOD, 
 	UPDATE_RETURN_METHOD,
 	INIT_EXAMPLE_METHOD,
 	INIT_LOCAL_METHOD,
 	FINISHED_INIT_LOCALS_METHOD,
 	FINISH_METHOD,
-	DEF_TYPES_METHOD;
+	DEF_TYPES_METHOD,
+	SET_DELTA_MODE_METHOD;
 	
 	
 	static String types = null;
+	static boolean deltaOnly = false;
 	static Map<String, List<Example>> methodsExamples;
 	static Stack<Example> workingExamples;
 	
 	static {
 		UPDATE_ASSIGNMENT_PRIMITIVE_METHOD = "UpdateAssignmentPrimitive";
 		UPDATE_ASSIGNMENT_OBJECT_METHOD = "UpdateAssignmentObject";
+		UPDATE_ASSIGNMENT_STMT_METHOD = "UpdateAssignmentStatement";
 		UPDATE_INVOKE_METHOD = "UpdateInvoke";
 		UPDATE_RETURN_METHOD = "UpdateReturn";
 		INIT_EXAMPLE_METHOD = "newExample";
@@ -35,6 +42,7 @@ public class Trace {
 		FINISHED_INIT_LOCALS_METHOD = "FinishedInitLocals";
 		FINISH_METHOD = "Finish";
 		DEF_TYPES_METHOD = "defTypes";
+		SET_DELTA_MODE_METHOD = "setDeltaMode";
 		
 		methodsExamples = new HashMap<>();
 		workingExamples = new Stack<>();
@@ -53,6 +61,10 @@ public class Trace {
 		types = typesString;
 	}
 	
+	public static void setDeltaMode(boolean deltaOnly) {
+		Trace.deltaOnly = deltaOnly;
+	}
+	
 	public static void InitLocal(String name, boolean isPrimitive) {
 		workingExamples.peek().InitLocal(name, isPrimitive);;
 	}
@@ -62,24 +74,39 @@ public class Trace {
 	}
 	
 	public static void Finish() {
-		for (String key : methodsExamples.keySet()) {
-			System.out.println(types);
-			
-			System.out.printf("%s {\n", key);
-			
-			for (Example e : methodsExamples.get(key)) {
-				System.out.printf("\t%s\n", e.getExampleText().replaceAll("\n", "\n\t"));
+		for (String method : methodsExamples.keySet()) {
+			String filename = method.substring(0, method.indexOf("(")) + ".spec";
+			try {
+				FileWriter fw = new FileWriter(new File(filename));
+				
+				fw.write(types);
+				
+				fw.write(String.format("%s {\n", method));
+				
+				for (Example e : methodsExamples.get(method)) 
+					fw.write(String.format("\t%s\n", e.getExampleText().replaceAll("\n", "\n\t")));
+				
+				fw.write("}");
+				fw.close();
+				
+			} catch (IOException e1) {
+				System.out.printf("failed to write method spec file: %s\n", filename);
+				e1.printStackTrace();
+				
 			}
-			System.out.println("}");
 		}
 	}
 	
 	public static void UpdateAssignmentPrimitive(String varName, int val) {
-		workingExamples.peek().UpdateAssignmentPrimitive(varName, val);
+		workingExamples.peek().UpdateAssignmentPrimitive(varName, val, deltaOnly);
 	}
 	
 	public static void UpdateAssignmentObject(String varName, Object val) {
 		workingExamples.peek().UpdateAssignmentObject(varName, val);
+	}
+	
+	public static void UpdateAssignmentStatement(String lval, String rval) {
+		workingExamples.peek().UpdateAssignmentStatement(lval, rval);
 	}
 	
 	public static void UpdateInvoke(String methodName) {
@@ -89,6 +116,6 @@ public class Trace {
 	public static void UpdateReturn() {
 		Example e = workingExamples.pop();
 		e.UpdateReturn();
-		methodsExamples.get(e.getFunctionName()).add(e);
+		methodsExamples.get(e.getFunctionSignature()).add(e);
 	}
 }

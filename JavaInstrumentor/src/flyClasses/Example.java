@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class Example {
 	public static final String CLASS_NAME = "flyClasses.Example";
-	private String functionName;
+	private String functionSignature;
 	private List<String> stateReports;
 	private Map<String, Object> locals;
 	
-	public Example(String functionName) {
-		this.functionName = functionName;
+	public Example(String functionSignature) {
+		this.functionSignature = functionSignature;
 		this.stateReports = new LinkedList<>();
 		locals = new HashMap<>();
 	}
@@ -30,36 +30,41 @@ public class Example {
 	}
 	
 	public void ReportState() {
-		List<String> stateLines = new LinkedList<>();
-		for (String localName : locals.keySet()) stateLines.add(getEqualityString(localName, locals.get(localName)));
-		addLine(String.format("[%s]", String.join(" && ", stateLines)));
+		List<String> stateEqualities = new LinkedList<>();
+		for (String localName : locals.keySet()) stateEqualities.add(getEqualityString(localName, locals.get(localName)));
+		addLine(String.format("[%s]", String.join(" && ", stateEqualities)));
 	}
 
-	public void UpdateAssignmentPrimitive(String varName, int val) {
+	public void UpdateAssignmentPrimitive(String varName, int val, boolean deltaOnly) {
 		locals.put(varName, val);
-		ReportState();
+		if (deltaOnly)
+			addLine(String.format("[%s]", getEqualityString(varName, val)));
+		else 
+			ReportState();
 	}
 
 	public void UpdateAssignmentObject(String varName, Object val) {
 		locals.put(varName, val);
 		ReportState();
 	}
+	
+	public void UpdateAssignmentStatement(String lval, String rval) {
+		addLine(lval + " = " + rval);
+	}
 
 	public void UpdateInvoke(String methodName) {
-//		addLine(String.format("%s", methodName));
-		
-		// nothing to do here either, apparently
+		addLine(String.format("%s", methodName)); // report invocation
 	}
 
 	public void UpdateReturn() {
 		// nothing to do here, apparently
 	}
 	
-	public String getFunctionName() {
-		return this.functionName;
+	public String getFunctionSignature() {
+		return this.functionSignature;
 	}
 	
 	public String getExampleText() {
-		return String.format("example {\n\t%s\n}", String.join(" ->\n\t", stateReports));
+		return String.format("example {\n\t%s\n}", String.join("\n\t-> ", stateReports));
 	}
 }
