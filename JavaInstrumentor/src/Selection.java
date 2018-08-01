@@ -5,6 +5,7 @@ import bgu.cs.util.soot.CaseInvoke;
 import bgu.cs.util.soot.CaseReturnStmt;
 import bgu.cs.util.soot.CaseReturnVoidStmt;
 import flyClasses.Example;
+import flyClasses.Scope;
 import flyClasses.Trace;
 import soot.ArrayType;
 import soot.RefType;
@@ -27,7 +28,7 @@ public class Selection {
 	public static boolean isFlyClass(SootClass sootClass) {
 		/* our classes that are loaded on the fly */
 		String className = sootClass.getName();
-		return className.equals(Trace.CLASS_NAME) || className.equals(Example.CLASS_NAME);
+		return className.equals(Trace.CLASS_NAME) || className.equals(Example.CLASS_NAME) || className.equals(Scope.CLASS_NAME);
 	}
 	
 	public static boolean isSpecialMethod(SootMethod method) {
