@@ -183,7 +183,7 @@ public class MyBodyTransformer extends BodyTransformer {
 						Jimple.v().newStaticInvokeExpr(
 								updaterMethodRef,
 								StringConstant.v(assignment.lhs.toString()),
-								r
+								assignment.lhs
 								)
 						);
 
