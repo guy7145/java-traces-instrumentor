@@ -1,6 +1,9 @@
 import java.rmi.UnexpectedException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,10 +11,14 @@ import bgu.cs.util.Matcher.Case;
 import bgu.cs.util.soot.CaseAssign;
 import bgu.cs.util.soot.CaseAssignFieldRef;
 import bgu.cs.util.soot.CaseAssignInstanceFieldRef;
+import bgu.cs.util.soot.CaseAssignLocal_BinopExpr;
+import bgu.cs.util.soot.CaseAssignLocal_InvokeInstance;
+import bgu.cs.util.soot.CaseAssignLocal_NewExpr;
 import bgu.cs.util.soot.CaseIdentityStmt;
 import bgu.cs.util.soot.CaseIdentityStmtParameter;
 import bgu.cs.util.soot.CaseIdentityStmtThis;
 import bgu.cs.util.soot.CaseInvoke;
+import bgu.cs.util.soot.CaseReturnStmt;
 import flyClasses.Trace;
 import soot.Body;
 import soot.BodyTransformer;
@@ -24,8 +31,11 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootMethodRef;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.VoidType;
+import soot.jimple.BinopExpr;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
@@ -34,10 +44,11 @@ import soot.jimple.Jimple;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
-import soot.jimple.internal.JArrayRef;;
+import soot.jimple.internal.JArrayRef;
+import soot.util.Chain;;
 
 public class MyBodyTransformer extends BodyTransformer {
-	public static String MY_PRIMITIVE_LOCAL_NAME = "mylocal", MY_REF_LOCAL_NAME = "$mylocal", OBJECT_TYPE = "java.lang.Object";
+	public static String MY_PRIMITIVE_LOCAL_NAME = "mylocal", MY_REF_LOCAL_NAME = "$mylocal", OBJECT_TYPE = "java.lang.Object", ToString_METHOD_SUBSIGNATURE = "toString";
 	private static Local myPrimitiveLocal, myRefLocal;
 
 	static SootClass traceClass;
@@ -47,7 +58,9 @@ public class MyBodyTransformer extends BodyTransformer {
 	updateInvoke, 
 	updateReturn, 
 	initExample,
-	initLocalMethod,
+	initLocalObjectMethod,
+	initLocalPrimitiveMethod,
+	initLocalDefaultMethod,
 	finishedInitLocalsMethod,
 	finishMethod,
 	defTypesMethod,
@@ -60,7 +73,9 @@ public class MyBodyTransformer extends BodyTransformer {
 		updateInvoke = traceClass.getMethodByName(Trace.UPDATE_INVOKE_METHOD);
 		updateReturn = traceClass.getMethodByName(Trace.UPDATE_RETURN_METHOD);
 		initExample = traceClass.getMethodByName(Trace.INIT_EXAMPLE_METHOD);
-		initLocalMethod = traceClass.getMethodByName(Trace.INIT_LOCAL_METHOD);
+		initLocalObjectMethod = traceClass.getMethodByName(Trace.INIT_LOCAL_OBJECT_METHOD);
+		initLocalPrimitiveMethod = traceClass.getMethodByName(Trace.INIT_LOCAL_PRIMITIVE_METHOD);
+		initLocalDefaultMethod = traceClass.getMethodByName(Trace.INIT_LOCAL_DEFAULT_METHOD);
 		finishedInitLocalsMethod = traceClass.getMethodByName(Trace.FINISHED_INIT_LOCALS_METHOD);
 		finishMethod = traceClass.getMethodByName(Trace.FINISH_METHOD);
 		defTypesMethod = traceClass.getMethodByName(Trace.DEF_TYPES_METHOD);
@@ -108,6 +123,36 @@ public class MyBodyTransformer extends BodyTransformer {
 			
 		return base + "." + fieldName;
 	}
+	
+	public static String getVariableName(Value v) {
+		if (v instanceof FieldRef) return getFieldName((FieldRef)v);
+		else return v.toString();
+	}
+	
+	protected static Value getRValJMinor(CaseAssign assignment) {
+		Value rval = null;
+		String stringVal = null;
+		
+		if (assignment instanceof CaseAssignLocal_BinopExpr) {
+			BinopExpr bin_op = (BinopExpr)assignment.rhs;
+			stringVal = getVariableName(bin_op.getOp1()) + bin_op.getSymbol() + getVariableName(bin_op.getOp2());
+		} 
+//		else if (assignment instanceof CaseAssignLocal_NewExpr) {
+//			Chain<SootClass> classes = Scene.v().getClasses();
+//			for (SootClass sc : classes) {
+//				if (sc.getType().equals(assignment.lhs.getType()))
+//					rval = Jimple.v().newSpecialInvokeExpr((Local)assignment.lhs, sc.getMethodByName(ToString_METHOD_SUBSIGNATURE).makeRef()); // is it necessarily a Local?
+//			}
+//			
+//			if (rval == null) System.err.println("Warning: didn't find class Object (getRValJMinor)");
+////			rval = assignment.lhs;
+//		}
+		
+		if (rval == null && stringVal == null) 
+			stringVal = getVariableName(assignment.rhs);
+		
+		return stringVal == null ? rval : StringConstant.v(stringVal);
+	}
 
 	private void patchAssignField(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
 		InstanceFieldRef fielfRef = (InstanceFieldRef)assignment.lhs;
@@ -124,14 +169,14 @@ public class MyBodyTransformer extends BodyTransformer {
 								mylocal
 								)
 						);
-
+		
 		methodUnits.insertAfter(assignTmpStmt, anchor);
 		anchor = assignTmpStmt;
 		methodUnits.insertAfter(invokeStmt, anchor);
 	}
 
 	private void patchAssignNormal(CaseAssign assignment, Unit anchor, PatchingChain<Unit> methodUnits, SootMethodRef updaterMethodRef) {
-		Value r = Selection.isPrimitive(assignment.lhs) ? assignment.lhs : StringConstant.v(assignment.rhs.toString());
+		Value r = Selection.isPrimitive(assignment.lhs) ? assignment.lhs : getRValJMinor(assignment);
 		
 		Stmt invokeStmt = 
 				Jimple.v().newInvokeStmt(
@@ -190,7 +235,28 @@ public class MyBodyTransformer extends BodyTransformer {
 		}
 		return map;
 	}
-
+	
+	private static Value getReturnValue(Body body) {
+		Set<Value> values = new HashSet<>();
+		Case<Unit> c;
+		CaseReturnStmt retStmt;
+		for (Unit unit : body.getUnits()) {
+			c = Selection.MatchUnit(unit);
+			if (Selection.isReturnStmt(c)) {
+				retStmt = (CaseReturnStmt)c;
+				values.add(retStmt.op);
+			}
+		}
+		
+		if (values.size() > 1) {
+			System.err.println("Warning: more than one return value found. choosing the first one... (getReturnValue)");
+		} else if (values.size() < 1) {
+			System.err.println("Warning: no return values found. you shouldn't call \"getReturnValue\" on void methods...");
+		}
+		
+		return values.iterator().next();
+	}
+	
 	public void addInitExamplePatch(SootMethod method) {
 		Stmt initExampleStmt = Jimple.v().newInvokeStmt(
 				Jimple.v().newStaticInvokeExpr(
@@ -224,17 +290,40 @@ public class MyBodyTransformer extends BodyTransformer {
 		}
 	}
 	
-	public static String getVariableName(Value v) {
-		if (v instanceof FieldRef) return getFieldName((FieldRef)v);
-		else return v.toString();
+	public static Set<Value> getParameters(Body body) {
+		Set<Value> params = new HashSet<>();
+		loop:
+		for (Unit unit : body.getUnits()) {
+			Case<Unit> c = Selection.MatchUnit(unit);
+			if (c instanceof CaseIdentityStmtParameter) {
+				params.add(((CaseIdentityStmtParameter)c).lhs);
+			} else if (!(c instanceof CaseIdentityStmt)) break loop; // once identity statements are over than we won't see another one again
+		}
+		
+		return params;
 	}
 
 	public void addInitLocalsPatch(SootMethod method, Unit anchor) {
+		Set<Value> params = getParameters(method.getActiveBody()); 
+		
 		for (Value local : locals.values()) {
+			SootMethod initMethod;
+			Value rvalue;
+			
+			boolean isParam = params.contains(local);
+			boolean isPrimitive = Selection.isPrimitive(local);
+			
+			if (!isParam) initMethod = initLocalDefaultMethod;
+			else if (isPrimitive) initMethod = initLocalPrimitiveMethod;
+			else initMethod = initLocalObjectMethod;
+			
+			if (isParam) rvalue = local;
+			else rvalue = IntConstant.v(isPrimitive ? 1 : 0);
+			
 			InvokeExpr exp = Jimple.v().newStaticInvokeExpr(
-					initLocalMethod.makeRef(), 
+					initMethod.makeRef(),
 					StringConstant.v(getVariableName(local)), 
-					IntConstant.v(Selection.isPrimitive(local) ? 1 : 0)
+					rvalue
 					);
 			Stmt stmt = Jimple.v().newInvokeStmt(exp);
 			method.getActiveBody().getUnits().insertBefore(stmt, anchor);
@@ -262,30 +351,22 @@ public class MyBodyTransformer extends BodyTransformer {
 	}
 
 	private String getMethodSignatureSpec(SootMethod method) {
-		String[] second = method.getSignature().split(": ")[1].split(" ");
-		StringBuilder ans = new StringBuilder(second[1].split("\\(")[0]);
-		ans.append("(");
-		Set<String> set = locals.keySet();
-		int i = 0;
-		for(String s : set) {
-			ans.append("mut ");
-			ans.append(s);
-			ans.append(":");
-			ans.append(locals.get(s).getType());
-			if(i != set.size()-1) {
-				ans.append(" , ");
-			}
-			i++;
+		String returnSig = "";
+		Type returnType = method.getReturnType();
+		if(!(returnType instanceof VoidType)) {
+			Value returnValue = getReturnValue(method.getActiveBody());
+			returnSig = String.format("%s:%s", returnValue.toString(), returnType);
 		}
-		if(second[0].equals("void")) {
-			ans.append(") -> ()");
-		}else {
-			ans.append(") -> (returnLocal:");
-			ans.append(second[0]);
-			ans.append(")");
-		}
-
-		return ans.toString();
+		
+		Set<Value> params = getParameters(method.getActiveBody());
+		List<String> paramsSigs = new LinkedList<>();
+		for(Value p : params) 
+			paramsSigs.add(String.format("mut %s:%s", getVariableName(p), p.getType()));		
+		
+		String paramsSig = String.join(", ", paramsSigs);
+		
+		
+		return String.format("%s(%s) -> (%s)", method.getName(), paramsSig, returnSig);
 	}
 
 	@Override
@@ -296,7 +377,6 @@ public class MyBodyTransformer extends BodyTransformer {
 		
 		locals = mapLocals(body);
 		addMyLocals(body);
-		getMethodSignatureSpec(method);
 		
 		for (Unit unit : body.getUnits()) {
 			Case<Unit> c = Selection.MatchUnit(unit);

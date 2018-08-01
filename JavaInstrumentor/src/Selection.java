@@ -63,8 +63,8 @@ public class Selection {
 	}
 	
 	public static boolean shouldIgnoreLocal(Value val) {
-		return isTempVar(val) || !isPrimitive(val);
-//		return isTempVar(val);
+//		return isTempVar(val) || !isPrimitive(val);
+		return isTempVar(val);
 	}
 	
 	public static boolean shouldIgnoreUnit(Unit unit) {

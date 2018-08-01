@@ -19,7 +19,9 @@ public class Trace {
 	UPDATE_INVOKE_METHOD, 
 	UPDATE_RETURN_METHOD,
 	INIT_EXAMPLE_METHOD,
-	INIT_LOCAL_METHOD,
+	INIT_LOCAL_OBJECT_METHOD,
+	INIT_LOCAL_PRIMITIVE_METHOD,
+	INIT_LOCAL_DEFAULT_METHOD,
 	FINISHED_INIT_LOCALS_METHOD,
 	FINISH_METHOD,
 	DEF_TYPES_METHOD,
@@ -38,7 +40,9 @@ public class Trace {
 		UPDATE_INVOKE_METHOD = "UpdateInvoke";
 		UPDATE_RETURN_METHOD = "UpdateReturn";
 		INIT_EXAMPLE_METHOD = "newExample";
-		INIT_LOCAL_METHOD = "InitLocal";
+		INIT_LOCAL_OBJECT_METHOD = "InitLocalObject";
+		INIT_LOCAL_PRIMITIVE_METHOD = "InitLocalInt";
+		INIT_LOCAL_DEFAULT_METHOD = "InitLocalDefault";
 		FINISHED_INIT_LOCALS_METHOD = "FinishedInitLocals";
 		FINISH_METHOD = "Finish";
 		DEF_TYPES_METHOD = "defTypes";
@@ -65,8 +69,16 @@ public class Trace {
 		Trace.deltaOnly = deltaOnly;
 	}
 	
-	public static void InitLocal(String name, boolean isPrimitive) {
-		workingExamples.peek().InitLocal(name, isPrimitive);;
+	public static void InitLocalDefault(String name, boolean isPrimitive) {
+		workingExamples.peek().InitLocalDefault(name, isPrimitive);;
+	}
+	
+	public static void InitLocalObject(String name, Object val) {
+		workingExamples.peek().InitLocal(name, val);
+	}
+	
+	public static void InitLocalInt(String name, int val) {
+		InitLocalObject(name, val);
 	}
 	
 	public static void FinishedInitLocals() {
@@ -77,7 +89,10 @@ public class Trace {
 		for (String method : methodsExamples.keySet()) {
 			String filename = method.substring(0, method.indexOf("(")) + ".spec";
 			try {
-				FileWriter fw = new FileWriter(new File(filename));
+				File file = new File(filename);
+				if (file.exists()) file.delete();
+				
+				FileWriter fw = new FileWriter(file);
 				
 				fw.write(types);
 				

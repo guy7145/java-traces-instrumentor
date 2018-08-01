@@ -1,20 +1,28 @@
-main(mut i2:int , mut $i1:int) -> () {
+tests.sll$SLL {
+	next:tests.sll$SLL
+	data:int
+}
+main(mut r0:java.lang.String[]) -> () {
 	example {
-		[i2 == 0 && $i1 == 0]
-		-> [i2 == 0 && $i1 == 0]
-		-> [i2 == 0 && $i1 == 1]
-		-> [i2 == 1 && $i1 == 1]
-		-> [i2 == 1 && $i1 == 1]
-		-> [i2 == 2 && $i1 == 1]
-		-> [i2 == 2 && $i1 == 2]
-		-> [i2 == 3 && $i1 == 2]
-		-> [i2 == 3 && $i1 == 6]
-		-> [i2 == 4 && $i1 == 6]
-		-> [i2 == 4 && $i1 == 24]
-		-> [i2 == 5 && $i1 == 24]
-		-> [i2 == 5 && $i1 == 120]
-		-> [i2 == 6 && $i1 == 120]
-		-> [i2 == 6 && $i1 == 720]
-		-> [i2 == 7 && $i1 == 720]
+		[i0 == 0 && r0 == [Ljava.lang.String;@33909752 && r1 == null]
+		-> i0 = 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
+		-> r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+		-> i0 = i0 + 1;
 	}
 }

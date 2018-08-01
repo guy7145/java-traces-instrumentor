@@ -21,8 +21,12 @@ public class Example {
 		this.stateReports.add(line);
 	}
 	
-	public void InitLocal(String name, boolean isPrimitive) {
+	public void InitLocalDefault(String name, boolean isPrimitive) {
 		locals.put(name, isPrimitive ? 0 : null);
+	}
+	
+	public void InitLocal(String name, Object val) {
+		locals.put(name, val);
 	}
 	
 	private static String getEqualityString(String var, Object val) {

@@ -5,6 +5,7 @@ import flyClasses.Trace;
 import soot.PatchingChain;
 import soot.SootMethod;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
@@ -21,27 +22,19 @@ public class UnitBodyTransformer extends MyBodyTransformer {
 		updateAssignStmtMethod = MyBodyTransformer.traceClass.getMethodByName(Trace.UPDATE_ASSIGNMENT_STMT_METHOD);
 	}
 	
-	private boolean reportInvokes;
-	
 	public UnitBodyTransformer(String[] userClasses, boolean deltaOnly, boolean reportInvokes) {
 		super(userClasses, deltaOnly, reportInvokes);
 	}
 	
 	@Override
 	protected void patchAssignment(Unit patchedUnit, SootMethod method, CaseAssign assignment) {
-		String rval;
-		if (assignment instanceof CaseAssignLocal_BinopExpr) {
-			BinopExpr bin_op = (BinopExpr)assignment.rhs;
-			
-			rval = getVariableName(bin_op.getOp1()) + bin_op.getSymbol() + getVariableName(bin_op.getOp2());
-		}
-		else rval = getVariableName(assignment.rhs);
+		Value rval = getRValJMinor(assignment);
 		
 		Stmt updateAssignStmt = Jimple.v().newInvokeStmt(
 				Jimple.v().newStaticInvokeExpr(
 						updateAssignStmtMethod.makeRef(), 
-						StringConstant.v(getVariableName(assignment.lhs).toString()),
-						StringConstant.v(rval)
+						StringConstant.v(getVariableName(assignment.lhs)),
+						rval
 						)
 				);
 		
