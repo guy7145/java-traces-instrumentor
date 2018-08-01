@@ -251,6 +251,9 @@ public class MyBodyTransformer extends BodyTransformer {
 		StringBuilder sb = new StringBuilder();
 		for (String className : userClasses) {
 			SootClass sc = Scene.v().getSootClass(className);
+			
+			if (sc.getFields().size() == 0) continue;
+			
 			sb.append(String.format("%s {\n", sc.getName()));
 			for (SootField f : sc.getFields()) sb.append(String.format("\t%s:%s\n", f.getName(), f.getType()));
 			sb.append("}\n");

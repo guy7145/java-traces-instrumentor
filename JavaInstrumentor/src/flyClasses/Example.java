@@ -49,7 +49,7 @@ public class Example {
 	}
 	
 	public void UpdateAssignmentStatement(String lval, String rval) {
-		addLine(lval + " = " + rval);
+		addLine(String.format("%s = %s;", lval, rval));
 	}
 
 	public void UpdateInvoke(String methodName) {
