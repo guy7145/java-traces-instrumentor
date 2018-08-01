@@ -1,0 +1,491 @@
+public class flyClasses.Trace extends java.lang.Object
+{
+    public static final java.lang.String CLASS_NAME;
+    public static java.lang.String UPDATE_ASSIGNMENT_PRIMITIVE_METHOD;
+    public static java.lang.String UPDATE_ASSIGNMENT_OBJECT_METHOD;
+    public static java.lang.String UPDATE_ASSIGNMENT_STMT_METHOD;
+    public static java.lang.String UPDATE_INVOKE_METHOD;
+    public static java.lang.String UPDATE_RETURN_METHOD;
+    public static java.lang.String INIT_EXAMPLE_METHOD;
+    public static java.lang.String INIT_LOCAL_OBJECT_METHOD;
+    public static java.lang.String INIT_LOCAL_PRIMITIVE_METHOD;
+    public static java.lang.String INIT_LOCAL_DEFAULT_METHOD;
+    public static java.lang.String FINISHED_INIT_LOCALS_METHOD;
+    public static java.lang.String FINISH_METHOD;
+    public static java.lang.String DEF_TYPES_METHOD;
+    public static java.lang.String SET_DELTA_MODE_METHOD;
+    static java.lang.String types;
+    static boolean deltaOnly;
+    static java.util.Map methodsExamples;
+    static java.util.Stack workingExamples;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+        java.util.Stack $r1;
+
+        <flyClasses.Trace: java.lang.String CLASS_NAME> = "flyClasses.Trace";
+
+        <flyClasses.Trace: java.lang.String types> = null;
+
+        <flyClasses.Trace: boolean deltaOnly> = 0;
+
+        <flyClasses.Trace: java.lang.String UPDATE_ASSIGNMENT_PRIMITIVE_METHOD> = "UpdateAssignmentPrimitive";
+
+        <flyClasses.Trace: java.lang.String UPDATE_ASSIGNMENT_OBJECT_METHOD> = "UpdateAssignmentObject";
+
+        <flyClasses.Trace: java.lang.String UPDATE_ASSIGNMENT_STMT_METHOD> = "UpdateAssignmentStatement";
+
+        <flyClasses.Trace: java.lang.String UPDATE_INVOKE_METHOD> = "UpdateInvoke";
+
+        <flyClasses.Trace: java.lang.String UPDATE_RETURN_METHOD> = "UpdateReturn";
+
+        <flyClasses.Trace: java.lang.String INIT_EXAMPLE_METHOD> = "newExample";
+
+        <flyClasses.Trace: java.lang.String INIT_LOCAL_OBJECT_METHOD> = "InitLocalObject";
+
+        <flyClasses.Trace: java.lang.String INIT_LOCAL_PRIMITIVE_METHOD> = "InitLocalInt";
+
+        <flyClasses.Trace: java.lang.String INIT_LOCAL_DEFAULT_METHOD> = "InitLocalDefault";
+
+        <flyClasses.Trace: java.lang.String FINISHED_INIT_LOCALS_METHOD> = "FinishedInitLocals";
+
+        <flyClasses.Trace: java.lang.String FINISH_METHOD> = "Finish";
+
+        <flyClasses.Trace: java.lang.String DEF_TYPES_METHOD> = "defTypes";
+
+        <flyClasses.Trace: java.lang.String SET_DELTA_MODE_METHOD> = "setDeltaMode";
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        <flyClasses.Trace: java.util.Map methodsExamples> = $r0;
+
+        $r1 = new java.util.Stack;
+
+        specialinvoke $r1.<java.util.Stack: void <init>()>();
+
+        <flyClasses.Trace: java.util.Stack workingExamples> = $r1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        flyClasses.Trace r0;
+
+        r0 := @this: flyClasses.Trace;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void addSample(java.lang.String)
+    {
+        java.lang.String r0;
+        java.lang.Object[] $r1;
+        java.io.PrintStream $r2;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r2 = <java.lang.System: java.io.PrintStream out>;
+
+        $r1 = newarray (java.lang.Object)[1];
+
+        $r1[0] = r0;
+
+        virtualinvoke $r2.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("\t%s", $r1);
+
+        return;
+    }
+
+    public static void newExample(java.lang.String)
+    {
+        java.lang.String r0;
+        java.util.LinkedList $r1;
+        java.util.Map $r2;
+        flyClasses.Example $r4;
+        java.util.Stack $r5;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r2 = <flyClasses.Trace: java.util.Map methodsExamples>;
+
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object putIfAbsent(java.lang.Object,java.lang.Object)>(r0, $r1);
+
+        $r5 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r4 = new flyClasses.Example;
+
+        specialinvoke $r4.<flyClasses.Example: void <init>(java.lang.String)>(r0);
+
+        virtualinvoke $r5.<java.util.Stack: java.lang.Object push(java.lang.Object)>($r4);
+
+        return;
+    }
+
+    public static void defTypes(java.lang.String)
+    {
+        java.lang.String r0;
+
+        r0 := @parameter0: java.lang.String;
+
+        <flyClasses.Trace: java.lang.String types> = r0;
+
+        return;
+    }
+
+    public static void setDeltaMode(boolean)
+    {
+        boolean z0;
+
+        z0 := @parameter0: boolean;
+
+        <flyClasses.Trace: boolean deltaOnly> = z0;
+
+        return;
+    }
+
+    public static void InitLocalDefault(java.lang.String, boolean)
+    {
+        java.lang.String r0;
+        boolean z0;
+        java.util.Stack $r1;
+        java.lang.Object $r2;
+        flyClasses.Example $r3;
+
+        r0 := @parameter0: java.lang.String;
+
+        z0 := @parameter1: boolean;
+
+        $r1 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r2 = virtualinvoke $r1.<java.util.Stack: java.lang.Object peek()>();
+
+        $r3 = (flyClasses.Example) $r2;
+
+        virtualinvoke $r3.<flyClasses.Example: void InitLocalDefault(java.lang.String,boolean)>(r0, z0);
+
+        return;
+    }
+
+    public static void InitLocalObject(java.lang.String, java.lang.Object)
+    {
+        java.lang.String r0;
+        java.lang.Object r1, $r3;
+        java.util.Stack $r2;
+        flyClasses.Example $r4;
+
+        r0 := @parameter0: java.lang.String;
+
+        r1 := @parameter1: java.lang.Object;
+
+        $r2 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r3 = virtualinvoke $r2.<java.util.Stack: java.lang.Object peek()>();
+
+        $r4 = (flyClasses.Example) $r3;
+
+        virtualinvoke $r4.<flyClasses.Example: void InitLocal(java.lang.String,java.lang.Object)>(r0, r1);
+
+        return;
+    }
+
+    public static void InitLocalInt(java.lang.String, int)
+    {
+        java.lang.String r0;
+        int i0;
+        java.lang.Integer $r1;
+
+        r0 := @parameter0: java.lang.String;
+
+        i0 := @parameter1: int;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalObject(java.lang.String,java.lang.Object)>(r0, $r1);
+
+        return;
+    }
+
+    public static void FinishedInitLocals()
+    {
+        java.util.Stack $r0;
+        java.lang.Object $r1;
+        flyClasses.Example $r2;
+
+        $r0 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r1 = virtualinvoke $r0.<java.util.Stack: java.lang.Object peek()>();
+
+        $r2 = (flyClasses.Example) $r1;
+
+        virtualinvoke $r2.<flyClasses.Example: void ReportState()>();
+
+        return;
+    }
+
+    public static void Finish()
+    {
+        java.lang.String r0, r2, $r10, $r11, $r15, $r17, $r23, $r24, $r25;
+        java.util.Iterator r1, r5;
+        flyClasses.Example r4;
+        java.util.Map $r6, $r18;
+        java.util.Set $r7;
+        java.lang.Object $r8, $r19, $r21;
+        java.lang.StringBuilder $r9, $r12;
+        int $i0;
+        java.io.File $r13;
+        boolean $z0, $z1, $z3;
+        java.io.FileWriter $r14;
+        java.lang.Object[] $r16, $r22, $r27;
+        java.util.List $r20;
+        java.io.IOException $r26;
+        java.io.PrintStream $r28;
+
+        $r6 = <flyClasses.Trace: java.util.Map methodsExamples>;
+
+        $r7 = interfaceinvoke $r6.<java.util.Map: java.util.Set keySet()>();
+
+        r1 = interfaceinvoke $r7.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label8;
+
+     label1:
+        $r8 = interfaceinvoke r1.<java.util.Iterator: java.lang.Object next()>();
+
+        r0 = (java.lang.String) $r8;
+
+        $r9 = new java.lang.StringBuilder;
+
+        $i0 = virtualinvoke r0.<java.lang.String: int indexOf(java.lang.String)>("(");
+
+        $r10 = virtualinvoke r0.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+        $r11 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r10);
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>($r11);
+
+        $r12 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".spec");
+
+        r2 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label2:
+        $r13 = new java.io.File;
+
+        specialinvoke $r13.<java.io.File: void <init>(java.lang.String)>(r2);
+
+        $z0 = virtualinvoke $r13.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label3;
+
+        virtualinvoke $r13.<java.io.File: boolean delete()>();
+
+     label3:
+        $r14 = new java.io.FileWriter;
+
+        specialinvoke $r14.<java.io.FileWriter: void <init>(java.io.File)>($r13);
+
+        $r15 = <flyClasses.Trace: java.lang.String types>;
+
+        virtualinvoke $r14.<java.io.FileWriter: void write(java.lang.String)>($r15);
+
+        $r16 = newarray (java.lang.Object)[1];
+
+        $r16[0] = r0;
+
+        $r17 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s {\n", $r16);
+
+        virtualinvoke $r14.<java.io.FileWriter: void write(java.lang.String)>($r17);
+
+        $r18 = <flyClasses.Trace: java.util.Map methodsExamples>;
+
+        $r19 = interfaceinvoke $r18.<java.util.Map: java.lang.Object get(java.lang.Object)>(r0);
+
+        $r20 = (java.util.List) $r19;
+
+        r5 = interfaceinvoke $r20.<java.util.List: java.util.Iterator iterator()>();
+
+        goto label5;
+
+     label4:
+        $r21 = interfaceinvoke r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (flyClasses.Example) $r21;
+
+        $r22 = newarray (java.lang.Object)[1];
+
+        $r23 = virtualinvoke r4.<flyClasses.Example: java.lang.String getExampleText()>();
+
+        $r24 = virtualinvoke $r23.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\n", "\n\t");
+
+        $r22[0] = $r24;
+
+        $r25 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("\t%s\n", $r22);
+
+        virtualinvoke $r14.<java.io.FileWriter: void write(java.lang.String)>($r25);
+
+     label5:
+        $z1 = interfaceinvoke r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 != 0 goto label4;
+
+        virtualinvoke $r14.<java.io.FileWriter: void write(java.lang.String)>("}");
+
+        virtualinvoke $r14.<java.io.FileWriter: void close()>();
+
+     label6:
+        goto label8;
+
+     label7:
+        $r26 := @caughtexception;
+
+        $r28 = <java.lang.System: java.io.PrintStream out>;
+
+        $r27 = newarray (java.lang.Object)[1];
+
+        $r27[0] = r2;
+
+        virtualinvoke $r28.<java.io.PrintStream: java.io.PrintStream printf(java.lang.String,java.lang.Object[])>("failed to write method spec file: %s\n", $r27);
+
+        virtualinvoke $r26.<java.io.IOException: void printStackTrace()>();
+
+     label8:
+        $z3 = interfaceinvoke r1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z3 != 0 goto label1;
+
+        return;
+
+        catch java.io.IOException from label2 to label6 with label7;
+    }
+
+    public static void UpdateAssignmentPrimitive(java.lang.String, int)
+    {
+        java.lang.String r0;
+        int i0;
+        java.util.Stack $r1;
+        java.lang.Object $r2;
+        boolean $z0;
+        flyClasses.Example $r3;
+
+        r0 := @parameter0: java.lang.String;
+
+        i0 := @parameter1: int;
+
+        $r1 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r2 = virtualinvoke $r1.<java.util.Stack: java.lang.Object peek()>();
+
+        $r3 = (flyClasses.Example) $r2;
+
+        $z0 = <flyClasses.Trace: boolean deltaOnly>;
+
+        virtualinvoke $r3.<flyClasses.Example: void UpdateAssignmentPrimitive(java.lang.String,int,boolean)>(r0, i0, $z0);
+
+        return;
+    }
+
+    public static void UpdateAssignmentObject(java.lang.String, java.lang.Object)
+    {
+        java.lang.String r0;
+        java.lang.Object r1, $r3;
+        java.util.Stack $r2;
+        boolean $z0;
+        flyClasses.Example $r4;
+
+        r0 := @parameter0: java.lang.String;
+
+        r1 := @parameter1: java.lang.Object;
+
+        $r2 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r3 = virtualinvoke $r2.<java.util.Stack: java.lang.Object peek()>();
+
+        $r4 = (flyClasses.Example) $r3;
+
+        $z0 = <flyClasses.Trace: boolean deltaOnly>;
+
+        virtualinvoke $r4.<flyClasses.Example: void UpdateAssignmentObject(java.lang.String,java.lang.Object,boolean)>(r0, r1, $z0);
+
+        return;
+    }
+
+    public static void UpdateAssignmentStatement(java.lang.String, java.lang.String)
+    {
+        java.lang.String r0, r1;
+        java.util.Stack $r2;
+        java.lang.Object $r3;
+        flyClasses.Example $r4;
+
+        r0 := @parameter0: java.lang.String;
+
+        r1 := @parameter1: java.lang.String;
+
+        $r2 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r3 = virtualinvoke $r2.<java.util.Stack: java.lang.Object peek()>();
+
+        $r4 = (flyClasses.Example) $r3;
+
+        virtualinvoke $r4.<flyClasses.Example: void UpdateAssignmentStatement(java.lang.String,java.lang.String)>(r0, r1);
+
+        return;
+    }
+
+    public static void UpdateInvoke(java.lang.String)
+    {
+        java.lang.String r0;
+        java.util.Stack $r1;
+        java.lang.Object $r2;
+        flyClasses.Example $r3;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r1 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r2 = virtualinvoke $r1.<java.util.Stack: java.lang.Object peek()>();
+
+        $r3 = (flyClasses.Example) $r2;
+
+        virtualinvoke $r3.<flyClasses.Example: void UpdateInvoke(java.lang.String)>(r0);
+
+        return;
+    }
+
+    public static void UpdateReturn()
+    {
+        flyClasses.Example r0;
+        java.util.Stack $r1;
+        java.lang.Object $r2, $r5;
+        java.util.Map $r3;
+        java.lang.String $r4;
+        java.util.List $r6;
+
+        $r1 = <flyClasses.Trace: java.util.Stack workingExamples>;
+
+        $r2 = virtualinvoke $r1.<java.util.Stack: java.lang.Object pop()>();
+
+        r0 = (flyClasses.Example) $r2;
+
+        virtualinvoke r0.<flyClasses.Example: void UpdateReturn()>();
+
+        $r3 = <flyClasses.Trace: java.util.Map methodsExamples>;
+
+        $r4 = virtualinvoke r0.<flyClasses.Example: java.lang.String getFunctionSignature()>();
+
+        $r5 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4);
+
+        $r6 = (java.util.List) $r5;
+
+        interfaceinvoke $r6.<java.util.List: boolean add(java.lang.Object)>(r0);
+
+        return;
+    }
+}

@@ -1,0 +1,69 @@
+class tests.sll$SLL extends java.lang.Object
+{
+    tests.sll$SLL next;
+    int data;
+
+    public void <init>()
+    {
+        tests.sll$SLL r0;
+
+        r0 := @this: tests.sll$SLL;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<tests.sll$SLL: tests.sll$SLL next> = null;
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        tests.sll$SLL r0;
+        java.lang.StringBuilder $r1, $r2;
+        int $i0, mylocal;
+        java.lang.String $r3;
+        java.lang.Object $mylocal;
+
+        r0 := @this: tests.sll$SLL;
+
+        staticinvoke <flyClasses.Trace: void setDeltaMode(boolean)>(1);
+
+        staticinvoke <flyClasses.Trace: void defTypes(java.lang.String)>("type tests.sll$SLL {\n\tnext:tests.sll$SLL\n\tdata:int\n}\n");
+
+        staticinvoke <flyClasses.Trace: void newExample(java.lang.String)>("toString(mut $r1:java.lang.StringBuilder, mut $r2:java.lang.StringBuilder, mut $r3:java.lang.String, mut $i0:int, mut r0:tests.sll$SLL) -> ($r3:java.lang.String)");
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r1", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r2", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r3", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$i0", 1);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("r0", 0);
+
+        staticinvoke <flyClasses.Trace: void FinishedInitLocals()>();
+
+        $r1 = new java.lang.StringBuilder;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r1", "new java.lang.StringBuilder");
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("sll");
+
+        $i0 = r0.<tests.sll$SLL: int data>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("$i0", $i0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r2", "virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0)");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r3", "virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>()");
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
+
+        return $r3;
+    }
+}

@@ -1,0 +1,284 @@
+public class tests.sll extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        tests.sll r0;
+
+        r0 := @this: tests.sll;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static tests.sll$SLL generateListWithLengthN(int)
+    {
+        int i0, i1, mylocal;
+        tests.sll$SLL $r1, $r2, r3;
+        java.lang.Object $mylocal;
+
+        i0 := @parameter0: int;
+
+        staticinvoke <flyClasses.Trace: void setDeltaMode(boolean)>(1);
+
+        staticinvoke <flyClasses.Trace: void defTypes(java.lang.String)>("type tests.sll$SLL {\n\tnext:tests.sll$SLL\n\tdata:int\n}\n");
+
+        staticinvoke <flyClasses.Trace: void newExample(java.lang.String)>("generateListWithLengthN(mut r3:tests.sll$SLL, mut $r1:java.lang.StringBuilder, mut $r2:tests.sll$SLL, mut $r3:java.lang.String, mut i1:int, mut r3.next:tests.sll$SLL, mut $i0:int, mut r0:tests.sll$SLL) -> ($r1:tests.sll$SLL)");
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("r3", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r1", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r2", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r3", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("i1", 1);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("r3.next", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$i0", 1);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("r0", 0);
+
+        staticinvoke <flyClasses.Trace: void FinishedInitLocals()>();
+
+        $r1 = new tests.sll$SLL;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r1", "new tests.sll$SLL");
+
+        specialinvoke $r1.<tests.sll$SLL: void <init>()>();
+
+        r3 = $r1;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("r3", "$r1");
+
+        i1 = 0;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("i1", i1);
+
+        goto label2;
+
+     label1:
+        $r2 = new tests.sll$SLL;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r2", "new tests.sll$SLL");
+
+        specialinvoke $r2.<tests.sll$SLL: void <init>()>();
+
+        r3.<tests.sll$SLL: tests.sll$SLL next> = $r2;
+
+        $mylocal = r3.<tests.sll$SLL: tests.sll$SLL next>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("r3.next", $mylocal);
+
+        r3 = r3.<tests.sll$SLL: tests.sll$SLL next>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("r3", "r3.next");
+
+        i1 = i1 + 1;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("i1", i1);
+
+     label2:
+        if i1 < i0 goto label1;
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
+
+        return $r1;
+    }
+
+    public static void fill(tests.sll$SLL)
+    {
+        tests.sll$SLL $r0, r1;
+        int i0, mylocal;
+        java.lang.Object $mylocal;
+
+        r1 := @parameter0: tests.sll$SLL;
+
+        staticinvoke <flyClasses.Trace: void setDeltaMode(boolean)>(1);
+
+        staticinvoke <flyClasses.Trace: void defTypes(java.lang.String)>("type tests.sll$SLL {\n\tnext:tests.sll$SLL\n\tdata:int\n}\n");
+
+        staticinvoke <flyClasses.Trace: void newExample(java.lang.String)>("fill(mut $r0:tests.sll$SLL, mut r1.data:int, mut i0:int, mut r1:tests.sll$SLL) -> ()");
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r0", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("r1.data", 1);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("i0", 1);
+
+        staticinvoke <flyClasses.Trace: void InitLocalObject(java.lang.String,java.lang.Object)>("r1", r1);
+
+        staticinvoke <flyClasses.Trace: void FinishedInitLocals()>();
+
+        i0 = 0;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("i0", i0);
+
+        goto label2;
+
+     label1:
+        r1.<tests.sll$SLL: int data> = i0;
+
+        mylocal = r1.<tests.sll$SLL: int data>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("r1.data", mylocal);
+
+        r1 = r1.<tests.sll$SLL: tests.sll$SLL next>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("r1", "r1.next");
+
+        i0 = i0 + 1;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("i0", i0);
+
+     label2:
+        $r0 = r1.<tests.sll$SLL: tests.sll$SLL next>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r0", "r1.next");
+
+        if $r0 != null goto label1;
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
+
+        return;
+    }
+
+    public static void printSLL(tests.sll$SLL)
+    {
+        tests.sll$SLL $r0, r6;
+        java.lang.StringBuilder $r1, $r3;
+        java.io.PrintStream $r2, $r5;
+        int $i0, mylocal;
+        java.lang.String $r4;
+        java.lang.Object $mylocal;
+
+        r6 := @parameter0: tests.sll$SLL;
+
+        staticinvoke <flyClasses.Trace: void setDeltaMode(boolean)>(1);
+
+        staticinvoke <flyClasses.Trace: void defTypes(java.lang.String)>("type tests.sll$SLL {\n\tnext:tests.sll$SLL\n\tdata:int\n}\n");
+
+        staticinvoke <flyClasses.Trace: void newExample(java.lang.String)>("printSLL(mut $r0:tests.sll$SLL, mut $r1:java.lang.StringBuilder, mut $r2:java.io.PrintStream, mut r6:tests.sll$SLL, mut $r3:java.lang.StringBuilder, mut $r4:java.lang.String, mut $r5:java.io.PrintStream, mut $i0:int) -> ()");
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r0", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r1", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r2", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalObject(java.lang.String,java.lang.Object)>("r6", r6);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r3", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r4", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$r5", 0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("$i0", 1);
+
+        staticinvoke <flyClasses.Trace: void FinishedInitLocals()>();
+
+        goto label2;
+
+     label1:
+        $r2 = <java.lang.System: java.io.PrintStream out>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r2", "java.lang.System.out");
+
+        $r1 = new java.lang.StringBuilder;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r1", "new java.lang.StringBuilder");
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>(" --> ");
+
+        $i0 = r6.<tests.sll$SLL: int data>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("$i0", $i0);
+
+        $r3 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r3", "virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0)");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r4", "virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>()");
+
+        virtualinvoke $r2.<java.io.PrintStream: void print(java.lang.String)>($r4);
+
+        r6 = r6.<tests.sll$SLL: tests.sll$SLL next>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("r6", "r6.next");
+
+     label2:
+        $r0 = r6.<tests.sll$SLL: tests.sll$SLL next>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r0", "r6.next");
+
+        if $r0 != null goto label1;
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("$r5", "java.lang.System.out");
+
+        virtualinvoke $r5.<java.io.PrintStream: void println()>();
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
+
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        tests.sll$SLL r1;
+        int i0, mylocal;
+        java.lang.Object $mylocal;
+
+        r0 := @parameter0: java.lang.String[];
+
+        staticinvoke <flyClasses.Trace: void setDeltaMode(boolean)>(1);
+
+        staticinvoke <flyClasses.Trace: void defTypes(java.lang.String)>("type tests.sll$SLL {\n\tnext:tests.sll$SLL\n\tdata:int\n}\n");
+
+        staticinvoke <flyClasses.Trace: void newExample(java.lang.String)>("main(mut i0:int, mut r0:java.lang.String[], mut r1:tests.sll$SLL) -> ()");
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("i0", 1);
+
+        staticinvoke <flyClasses.Trace: void InitLocalObject(java.lang.String,java.lang.Object)>("r0", r0);
+
+        staticinvoke <flyClasses.Trace: void InitLocalDefault(java.lang.String,boolean)>("r1", 0);
+
+        staticinvoke <flyClasses.Trace: void FinishedInitLocals()>();
+
+        i0 = 1;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("i0", i0);
+
+        goto label2;
+
+     label1:
+        r1 = staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0);
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentObject(java.lang.String,java.lang.Object)>("r1", "staticinvoke <tests.sll: tests.sll$SLL generateListWithLengthN(int)>(i0)");
+
+        staticinvoke <tests.sll: void fill(tests.sll$SLL)>(r1);
+
+        staticinvoke <tests.sll: void printSLL(tests.sll$SLL)>(r1);
+
+        i0 = i0 + 1;
+
+        staticinvoke <flyClasses.Trace: void UpdateAssignmentPrimitive(java.lang.String,int)>("i0", i0);
+
+     label2:
+        if i0 < 10 goto label1;
+
+        staticinvoke <flyClasses.Trace: void UpdateReturn()>();
+
+        staticinvoke <flyClasses.Trace: void Finish()>();
+
+        return;
+    }
+}

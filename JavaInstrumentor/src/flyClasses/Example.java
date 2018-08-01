@@ -47,9 +47,12 @@ public class Example {
 			ReportState();
 	}
 
-	public void UpdateAssignmentObject(String varName, Object val) {
+	public void UpdateAssignmentObject(String varName, Object val, boolean deltaOnly) {
 		locals.put(varName, val);
-		ReportState();
+		if (deltaOnly)
+			addLine(String.format("[%s]", getEqualityString(varName, val)));
+		else 
+			ReportState();
 	}
 	
 	public void UpdateAssignmentStatement(String lval, String rval) {

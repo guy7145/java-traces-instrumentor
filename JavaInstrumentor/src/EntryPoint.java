@@ -6,6 +6,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.util.Arrays;
 
 import flyClasses.Example;
+import flyClasses.Scope;
 import flyClasses.Trace;
 
 /**
@@ -128,6 +129,7 @@ public class EntryPoint {
 				flag_jimple ? "jimple" : "class",
 				Trace.CLASS_NAME,
 				Example.CLASS_NAME,
+				Scope.CLASS_NAME,
 				mainClass
 		};
 		

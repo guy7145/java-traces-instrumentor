@@ -1,0 +1,368 @@
+public class flyClasses.Example extends java.lang.Object
+{
+    public static final java.lang.String CLASS_NAME;
+    private java.lang.String functionSignature;
+    private java.util.List stateReports;
+    private java.util.Map locals;
+
+    public void <init>(java.lang.String)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1;
+        java.util.LinkedList $r2;
+        java.util.HashMap $r3;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<flyClasses.Example: java.lang.String functionSignature> = r1;
+
+        $r2 = new java.util.LinkedList;
+
+        specialinvoke $r2.<java.util.LinkedList: void <init>()>();
+
+        r0.<flyClasses.Example: java.util.List stateReports> = $r2;
+
+        $r3 = new java.util.HashMap;
+
+        specialinvoke $r3.<java.util.HashMap: void <init>()>();
+
+        r0.<flyClasses.Example: java.util.Map locals> = $r3;
+
+        return;
+    }
+
+    public void addLine(java.lang.String)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1;
+        java.util.List $r2;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<flyClasses.Example: java.util.List stateReports>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>(r1);
+
+        return;
+    }
+
+    public void InitLocalDefault(java.lang.String, boolean)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1;
+        boolean z0;
+        java.util.Map $r2;
+        java.lang.Integer $r5;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        z0 := @parameter1: boolean;
+
+        $r2 = r0.<flyClasses.Example: java.util.Map locals>;
+
+        if z0 == 0 goto label1;
+
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        goto label2;
+
+     label1:
+        $r5 = null;
+
+     label2:
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, $r5);
+
+        return;
+    }
+
+    public void InitLocal(java.lang.String, java.lang.Object)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1;
+        java.lang.Object r2;
+        java.util.Map $r3;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        r2 := @parameter1: java.lang.Object;
+
+        $r3 = r0.<flyClasses.Example: java.util.Map locals>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, r2);
+
+        return;
+    }
+
+    private static java.lang.String getEqualityString(java.lang.String, java.lang.Object)
+    {
+        java.lang.String r0, $r3;
+        java.lang.Object r1;
+        java.lang.Object[] $r2;
+
+        r0 := @parameter0: java.lang.String;
+
+        r1 := @parameter1: java.lang.Object;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r2[0] = r0;
+
+        $r2[1] = r1;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s == %s", $r2);
+
+        return $r3;
+    }
+
+    public void ReportState()
+    {
+        flyClasses.Example r0;
+        java.lang.String r2, $r10, $r12, $r13;
+        java.util.Iterator r3;
+        java.util.LinkedList $r4;
+        java.util.Map $r5, $r8;
+        java.util.Set $r6;
+        boolean $z0;
+        java.lang.Object $r7, $r9;
+        java.lang.Object[] $r11;
+
+        r0 := @this: flyClasses.Example;
+
+        $r4 = new java.util.LinkedList;
+
+        specialinvoke $r4.<java.util.LinkedList: void <init>()>();
+
+        $r5 = r0.<flyClasses.Example: java.util.Map locals>;
+
+        $r6 = interfaceinvoke $r5.<java.util.Map: java.util.Set keySet()>();
+
+        r3 = interfaceinvoke $r6.<java.util.Set: java.util.Iterator iterator()>();
+
+        goto label2;
+
+     label1:
+        $r7 = interfaceinvoke r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r2 = (java.lang.String) $r7;
+
+        $r8 = r0.<flyClasses.Example: java.util.Map locals>;
+
+        $r9 = interfaceinvoke $r8.<java.util.Map: java.lang.Object get(java.lang.Object)>(r2);
+
+        $r10 = staticinvoke <flyClasses.Example: java.lang.String getEqualityString(java.lang.String,java.lang.Object)>(r2, $r9);
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r10);
+
+     label2:
+        $z0 = interfaceinvoke r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label1;
+
+        $r11 = newarray (java.lang.Object)[1];
+
+        $r12 = staticinvoke <java.lang.String: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(" && ", $r4);
+
+        $r11[0] = $r12;
+
+        $r13 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("[%s]", $r11);
+
+        virtualinvoke r0.<flyClasses.Example: void addLine(java.lang.String)>($r13);
+
+        return;
+    }
+
+    public void UpdateAssignmentPrimitive(java.lang.String, int, boolean)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1, $r7, $r8;
+        int i0;
+        boolean z0;
+        java.util.Map $r2;
+        java.lang.Integer $r3, $r6;
+        java.lang.Object[] $r5;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        i0 := @parameter1: int;
+
+        z0 := @parameter2: boolean;
+
+        $r2 = r0.<flyClasses.Example: java.util.Map locals>;
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, $r3);
+
+        if z0 == 0 goto label1;
+
+        $r5 = newarray (java.lang.Object)[1];
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        $r7 = staticinvoke <flyClasses.Example: java.lang.String getEqualityString(java.lang.String,java.lang.Object)>(r1, $r6);
+
+        $r5[0] = $r7;
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("[%s]", $r5);
+
+        virtualinvoke r0.<flyClasses.Example: void addLine(java.lang.String)>($r8);
+
+        goto label2;
+
+     label1:
+        virtualinvoke r0.<flyClasses.Example: void ReportState()>();
+
+     label2:
+        return;
+    }
+
+    public void UpdateAssignmentObject(java.lang.String, java.lang.Object, boolean)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1, $r6, $r7;
+        java.lang.Object r2;
+        boolean z0;
+        java.util.Map $r3;
+        java.lang.Object[] $r5;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        r2 := @parameter1: java.lang.Object;
+
+        z0 := @parameter2: boolean;
+
+        $r3 = r0.<flyClasses.Example: java.util.Map locals>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>(r1, r2);
+
+        if z0 == 0 goto label1;
+
+        $r5 = newarray (java.lang.Object)[1];
+
+        $r6 = staticinvoke <flyClasses.Example: java.lang.String getEqualityString(java.lang.String,java.lang.Object)>(r1, r2);
+
+        $r5[0] = $r6;
+
+        $r7 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("[%s]", $r5);
+
+        virtualinvoke r0.<flyClasses.Example: void addLine(java.lang.String)>($r7);
+
+        goto label2;
+
+     label1:
+        virtualinvoke r0.<flyClasses.Example: void ReportState()>();
+
+     label2:
+        return;
+    }
+
+    public void UpdateAssignmentStatement(java.lang.String, java.lang.String)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1, r2, $r4;
+        java.lang.Object[] $r3;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        r2 := @parameter1: java.lang.String;
+
+        $r3 = newarray (java.lang.Object)[2];
+
+        $r3[0] = r1;
+
+        $r3[1] = r2;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s = %s;", $r3);
+
+        virtualinvoke r0.<flyClasses.Example: void addLine(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void UpdateInvoke(java.lang.String)
+    {
+        flyClasses.Example r0;
+        java.lang.String r1, $r3;
+        java.lang.Object[] $r2;
+
+        r0 := @this: flyClasses.Example;
+
+        r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.Object)[1];
+
+        $r2[0] = r1;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s", $r2);
+
+        virtualinvoke r0.<flyClasses.Example: void addLine(java.lang.String)>($r3);
+
+        return;
+    }
+
+    public void UpdateReturn()
+    {
+        flyClasses.Example r0;
+
+        r0 := @this: flyClasses.Example;
+
+        return;
+    }
+
+    public java.lang.String getFunctionSignature()
+    {
+        flyClasses.Example r0;
+        java.lang.String $r1;
+
+        r0 := @this: flyClasses.Example;
+
+        $r1 = r0.<flyClasses.Example: java.lang.String functionSignature>;
+
+        return $r1;
+    }
+
+    public java.lang.String getExampleText()
+    {
+        flyClasses.Example r0;
+        java.lang.Object[] $r1;
+        java.util.List $r2;
+        java.lang.String $r3, $r4;
+
+        r0 := @this: flyClasses.Example;
+
+        $r1 = newarray (java.lang.Object)[1];
+
+        $r2 = r0.<flyClasses.Example: java.util.List stateReports>;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>("\n\t-> ", $r2);
+
+        $r1[0] = $r3;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("example {\n\t%s\n}", $r1);
+
+        return $r4;
+    }
+
+    public static void <clinit>()
+    {
+        <flyClasses.Example: java.lang.String CLASS_NAME> = "flyClasses.Example";
+
+        return;
+    }
+}

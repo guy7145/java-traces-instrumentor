@@ -343,7 +343,7 @@ public class MyBodyTransformer extends BodyTransformer {
 			
 			if (sc.getFields().size() == 0) continue;
 			
-			sb.append(String.format("%s {\n", sc.getName()));
+			sb.append(String.format("type %s {\n", sc.getName()));
 			for (SootField f : sc.getFields()) sb.append(String.format("\t%s:%s\n", f.getName(), f.getType()));
 			sb.append("}\n");
 		}
@@ -358,13 +358,11 @@ public class MyBodyTransformer extends BodyTransformer {
 			returnSig = String.format("%s:%s", returnValue.toString(), returnType);
 		}
 		
-		Set<Value> params = getParameters(method.getActiveBody());
-		List<String> paramsSigs = new LinkedList<>();
-		for(Value p : params) 
-			paramsSigs.add(String.format("mut %s:%s", getVariableName(p), p.getType()));		
+		List<String> params = new LinkedList<>();
+		for(Value local : locals.values()) 
+			params.add(String.format("mut %s:%s", getVariableName(local), local.getType()));		
 		
-		String paramsSig = String.join(", ", paramsSigs);
-		
+		String paramsSig = String.join(", ", params);
 		
 		return String.format("%s(%s) -> (%s)", method.getName(), paramsSig, returnSig);
 	}

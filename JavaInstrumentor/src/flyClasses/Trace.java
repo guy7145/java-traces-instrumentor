@@ -117,7 +117,7 @@ public class Trace {
 	}
 	
 	public static void UpdateAssignmentObject(String varName, Object val) {
-		workingExamples.peek().UpdateAssignmentObject(varName, val);
+		workingExamples.peek().UpdateAssignmentObject(varName, val, deltaOnly);
 	}
 	
 	public static void UpdateAssignmentStatement(String lval, String rval) {
